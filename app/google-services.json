@@ -1,0 +1,40 @@
+{
+  "project_info": {
+    "project_number": "963300055023",
+    "firebase_url": "https://nstu-transport-management.firebaseio.com",
+    "project_id": "nstu-transport-management",
+    "storage_bucket": "nstu-transport-management.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:963300055023:android:6b3830d670873f35",
+        "android_client_info": {
+          "package_name": "com.shhridoy.nstutransportmanagement"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "963300055023-ngghlhosjjf1ue7krtodafa46k9stbgq.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyDykfFreidnXGdVv7TA2EQqdr_UoJHH3UU"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "963300055023-ngghlhosjjf1ue7krtodafa46k9stbgq.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
