@@ -86,12 +86,13 @@
                     android:paddingRight="0dp"/>
 
                 <EditText
+                    android:id="@+id/loginEmailET"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:hint="example@gmail.com"
                     android:singleLine="true"
                     android:maxLines="1"
-                    android:inputType="text"
+                    android:inputType="textEmailAddress"
                     android:textAlignment="textStart"
                     android:layout_gravity="start"
                     android:textAppearance="?android:attr/textAppearanceMedium"
