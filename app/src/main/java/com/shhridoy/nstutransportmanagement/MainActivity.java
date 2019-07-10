@@ -1,5 +1,6 @@
 package com.shhridoy.nstutransportmanagement;
 
+import android.annotation.SuppressLint;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
@@ -12,9 +13,22 @@ import android.support.v4.view.GravityCompat;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
+import android.view.Gravity;
+import android.view.LayoutInflater;
+import android.view.MotionEvent;
 import android.view.View;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.widget.AdapterView;
+import android.widget.ArrayAdapter;
+import android.widget.Button;
+import android.widget.EditText;
+import android.widget.PopupWindow;
+import android.widget.RadioButton;
+import android.widget.RadioGroup;
+import android.widget.RelativeLayout;
+import android.widget.Spinner;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import com.google.firebase.auth.FirebaseAuth;
@@ -30,11 +44,20 @@ import uk.co.chrisjenx.calligraphy.CalligraphyContextWrapper;
 
 public class MainActivity extends AppCompatActivity {
 
-    FirebaseAuth firebaseAuth;
-    FirebaseUser firebaseUser;
-    DatabaseReference databaseReference;
+    // firebase objects
+    private FirebaseAuth firebaseAuth;
+    private FirebaseUser firebaseUser;
+    private DatabaseReference databaseReference;
 
+    // views
     private CoordinatorLayout coordinatorLayout;
+    private FloatingActionButton addScheduleFab;
+
+    // popup window
+    private PopupWindow mPopUpWindow;
+    private RadioGroup radioGroup = null;
+    private RadioButton radioButton = null;
+    ArrayAdapter<String> arrayAdapter1, arrayAdapter2;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -43,31 +66,40 @@ public class MainActivity extends AppCompatActivity {
 
         init();
 
+        clickListeners();
+
     }
 
     private void init () {
         Toolbar toolbar = findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
 
+        coordinatorLayout = findViewById(R.id.coordinatorLayout);
+        addScheduleFab = findViewById(R.id.fab);
+
         firebaseAuth = FirebaseAuth.getInstance();
         firebaseUser = firebaseAuth.getCurrentUser();
-        databaseReference = FirebaseDatabase.getInstance().getReference().child("Users").child(firebaseAuth.getUid());
+        databaseReference = FirebaseDatabase.getInstance().getReference();
 
-        coordinatorLayout = findViewById(R.id.coordinatorLayout);
 
-        FloatingActionButton fab = findViewById(R.id.fab);
-        fab.setOnClickListener(new View.OnClickListener() {
+
+    }
+
+    private void clickListeners() {
+
+        addScheduleFab.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                Snackbar.make(view, "Replace with your own action", Snackbar.LENGTH_LONG)
-                        .setAction("Action", null).show();
+                //Snackbar.make(view, "Replace with your own action", Snackbar.LENGTH_LONG)
+                  //      .setAction("Action", null).show();
+                busScheduleInputPopupWindow();
             }
         });
 
     }
 
     private void getUserData() {
-        databaseReference.addValueEventListener(new ValueEventListener() {
+        databaseReference.child("Users").child(firebaseAuth.getUid()).addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
                 String name = dataSnapshot.child("name").getValue().toString();
@@ -149,4 +181,166 @@ public class MainActivity extends AppCompatActivity {
             }
         }, 2000);
     }
+
+    private void getRadioButton() {
+        int buttonId = radioGroup.getCheckedRadioButtonId();
+        radioButton = findViewById(buttonId);
+    }
+
+    public void checkButton(View view) {
+        getRadioButton();
+    }
+
+    @SuppressLint("InflateParams")
+    private void busScheduleInputPopupWindow() {
+
+        LayoutInflater inflater = (LayoutInflater) this.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
+        View layout = null;
+        if (inflater != null) {
+            layout = inflater.inflate(R.layout.bus_schedule_input_popup_window,null);
+        }
+
+        int width = getResources().getDisplayMetrics().widthPixels;
+        int height = getResources().getDisplayMetrics().heightPixels;
+
+        mPopUpWindow = new PopupWindow(layout, width, height, true);
+
+        // popup window views
+        RelativeLayout backDimRL = null;
+        RelativeLayout mainRL = null;
+        TextView popUpTitleTV = null;
+        EditText busTitleET = null, startPointET = null, endPointET = null, timeET = null, goingET = null;
+        Spinner startPointSpinner = null, endPointSpinner = null;
+        RelativeLayout rlPopup = null;
+        Button saveBtn = null;
+        final String[] spinnerItemList1 = {
+                "University Campus", "Begumgonj Chourasta", "Maijdee Bazar", "Sudaram Thana", "Boro Mashjid Mor", "Town Hall", "Cinema Hall",
+                "Boshur Haat", "Others"
+        };
+        final String[] spinnerItemList2 = {
+                "Begumgonj Chourasta", "Maijdee Bazar", "Sudaram Thana", "Boro Mashjid Mor", "Town Hall", "Cinema Hall",
+                "Boshur Haat", "Others"
+        };
+        final String[] spinnerItemList3 = {"University", "Others"};
+
+        if (layout != null) {
+            backDimRL = layout.findViewById(R.id.dimRL);
+            mainRL = layout.findViewById(R.id.main_popup);
+            popUpTitleTV = layout.findViewById(R.id.popUpTitleTV);
+            rlPopup = layout.findViewById(R.id.popUpRL);
+            busTitleET = layout.findViewById(R.id.busSchedulePopupBusTitleET);
+            startPointET = layout.findViewById(R.id.busSchedulePopupBusStartPointET);
+            endPointET = layout.findViewById(R.id.busSchedulePopupBusEndPointET);
+            timeET = layout.findViewById(R.id.busSchedulePopupTimeET);
+            goingET = layout.findViewById(R.id.busScheduleGoingET);
+            radioGroup = layout.findViewById(R.id.busSchedulePopupBusTypeRG);
+            getRadioButton();
+            startPointSpinner = layout.findViewById(R.id.busSchedulePopupBusStartPointSpinner);
+            endPointSpinner = layout.findViewById(R.id.busSchedulePopupBusEndPointSpinner);
+
+            arrayAdapter1 = new ArrayAdapter<String>(this, R.layout.item_spinner, R.id.itemSpinnerTV, spinnerItemList1);
+            startPointSpinner.setAdapter(arrayAdapter1);
+
+            if (startPointSpinner.getSelectedItem().toString().contains("University")) {
+
+            }
+            arrayAdapter2 = new ArrayAdapter<String>(this, R.layout.item_spinner, R.id.itemSpinnerTV, spinnerItemList1);
+            endPointSpinner.setAdapter(arrayAdapter2);
+
+        }
+
+        RelativeLayout.LayoutParams params = new RelativeLayout.LayoutParams( (int) (width*.95), (int) (height*.88) );
+
+        assert mainRL != null;
+        mainRL.setLayoutParams(params);
+
+
+        final Spinner finalEndPointSpinner = endPointSpinner;
+        final EditText finalStartPointET = startPointET;
+        startPointSpinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+            @Override
+            public void onItemSelected(AdapterView<?> adapterView, View view, int i, long l) {
+                if (spinnerItemList1[i].contains("University")) {
+                    arrayAdapter2 = new ArrayAdapter<String>(getApplicationContext(), R.layout.item_spinner, R.id.itemSpinnerTV, spinnerItemList2);
+                    finalEndPointSpinner.setAdapter(arrayAdapter2);
+                } else if (spinnerItemList1[i].contains("Others")) {
+                    finalStartPointET.setVisibility(View.VISIBLE);
+                } else {
+                    arrayAdapter2 = new ArrayAdapter<String>(getApplicationContext(), R.layout.item_spinner, R.id.itemSpinnerTV, spinnerItemList3);
+                    finalEndPointSpinner.setAdapter(arrayAdapter2);
+                }
+
+            }
+
+            @Override
+            public void onNothingSelected(AdapterView<?> adapterView) {
+
+            }
+        });
+
+        final EditText finalEndPointET = endPointET;
+        endPointSpinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+            @Override
+            public void onItemSelected(AdapterView<?> adapterView, View view, int i, long l) {
+                String item = adapterView.getItemAtPosition(i).toString();
+                if (item.contains("Others")) {
+                    finalEndPointET.setVisibility(View.VISIBLE);
+                }
+            }
+
+            @Override
+            public void onNothingSelected(AdapterView<?> adapterView) {
+
+            }
+        });
+
+
+        assert backDimRL != null;
+        backDimRL.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                mPopUpWindow.dismiss();
+            }
+        });
+
+        assert rlPopup != null;
+        rlPopup.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                // nothing to do
+            }
+        });
+
+        assert popUpTitleTV != null;
+        popUpTitleTV.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                // nothing to do
+            }
+        });
+
+        //Set up touch closing outside of pop-up
+        mPopUpWindow.setBackgroundDrawable(getResources().getDrawable(R.drawable.pop_up_bg));
+        mPopUpWindow.setAnimationStyle(android.R.style.Animation_Dialog);
+        mPopUpWindow.setTouchInterceptor(new View.OnTouchListener() {
+            @SuppressLint("ClickableViewAccessibility")
+            public boolean onTouch(View v, MotionEvent event) {
+                if(event.getAction() == MotionEvent.ACTION_OUTSIDE) {
+                    mPopUpWindow.dismiss();
+                    return true;
+                }
+                return false;
+            }
+        });
+        mPopUpWindow.setOutsideTouchable(true);
+
+        mPopUpWindow.setAnimationStyle(android.R.style.Animation_Dialog);
+        mPopUpWindow.setContentView(layout);
+        mPopUpWindow.showAtLocation(layout, Gravity.CENTER, 0, 0);
+    }
+
+    private void addBusScheduleToDB(EditText title, Spinner spinner) {
+
+    }
+
 }
