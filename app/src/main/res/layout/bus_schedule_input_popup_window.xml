@@ -126,8 +126,7 @@
                                 android:text="Teacher"
                                 android:textAppearance="?android:attr/textAppearanceMedium"
                                 android:textStyle="normal"
-                                android:textColor="@color/md_grey_800"
-                                android:onClick="checkButton"/>
+                                android:textColor="@color/md_grey_800" />
 
                             <RadioButton
                                 android:id="@+id/radioBtnStudent"
@@ -137,8 +136,7 @@
                                 android:text="Student"
                                 android:textAppearance="?android:attr/textAppearanceMedium"
                                 android:textStyle="normal"
-                                android:textColor="@color/md_grey_800"
-                                android:onClick="checkButton"/>
+                                android:textColor="@color/md_grey_800" />
 
                             <RadioButton
                                 android:id="@+id/radioBtnStuff"
@@ -148,10 +146,40 @@
                                 android:text="Stuff"
                                 android:textAppearance="?android:attr/textAppearanceMedium"
                                 android:textStyle="normal"
-                                android:textColor="@color/md_grey_800"
-                                android:onClick="checkButton"/>
+                                android:textColor="@color/md_grey_800" />
 
                         </RadioGroup>
+
+                        <TextView
+                            android:id="@+id/busSchedulePopupTimeTV"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:text="Time"
+                            android:textAlignment="textStart"
+                            android:layout_gravity="start"
+                            android:textAppearance="?android:attr/textAppearanceSmall"
+                            android:textColor="@color/colorPrimary"
+                            android:textStyle="normal"
+                            android:layout_marginTop="10dp"
+                            android:paddingLeft="3dp"
+                            android:paddingStart="3dp"
+                            android:paddingEnd="0dp"
+                            android:paddingRight="0dp"/>
+
+                        <EditText
+                            android:id="@+id/busSchedulePopupTimeET"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:hint="8:00 PM"
+                            android:singleLine="true"
+                            android:maxLines="1"
+                            android:inputType="text"
+                            android:textAlignment="textStart"
+                            android:layout_gravity="start"
+                            android:textAppearance="?android:attr/textAppearanceMedium"
+                            android:textColor="@android:color/black"
+                            android:textStyle="normal"
+                            android:layout_marginTop="5dp"/>
 
                         <TextView
                             android:id="@+id/busSchedulePopupBusStartPointTV"
@@ -173,8 +201,8 @@
                             android:id="@+id/busSchedulePopupBusStartPointSpinner"
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
-                            android:paddingTop="20dp"
-                            android:paddingBottom="20dp"
+                            android:paddingTop="5dp"
+                            android:paddingBottom="5dp"
                             android:paddingLeft="3dp"
                             android:paddingStart="3dp"
                             android:paddingRight="3dp"
@@ -219,8 +247,8 @@
                             android:id="@+id/busSchedulePopupBusEndPointSpinner"
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
-                            android:paddingTop="20dp"
-                            android:paddingBottom="20dp"
+                            android:paddingTop="5dp"
+                            android:paddingBottom="5dp"
                             android:paddingLeft="3dp"
                             android:paddingStart="3dp"
                             android:paddingRight="3dp"
@@ -238,37 +266,6 @@
                             android:singleLine="true"
                             android:maxLines="1"
                             android:inputType="text"
-                            android:textAlignment="textStart"
-                            android:layout_gravity="start"
-                            android:textAppearance="?android:attr/textAppearanceMedium"
-                            android:textColor="@android:color/black"
-                            android:textStyle="normal"
-                            android:layout_marginTop="5dp"/>
-
-                        <TextView
-                            android:id="@+id/busSchedulePopupTimeTV"
-                            android:layout_width="match_parent"
-                            android:layout_height="wrap_content"
-                            android:text="Time"
-                            android:textAlignment="textStart"
-                            android:layout_gravity="start"
-                            android:textAppearance="?android:attr/textAppearanceSmall"
-                            android:textColor="@color/colorPrimary"
-                            android:textStyle="normal"
-                            android:layout_marginTop="10dp"
-                            android:paddingLeft="3dp"
-                            android:paddingStart="3dp"
-                            android:paddingEnd="0dp"
-                            android:paddingRight="0dp"/>
-
-                        <EditText
-                            android:id="@+id/busSchedulePopupTimeET"
-                            android:layout_width="match_parent"
-                            android:layout_height="wrap_content"
-                            android:hint="8:00 PM"
-                            android:singleLine="true"
-                            android:maxLines="1"
-                            android:inputType="time|datetime"
                             android:textAlignment="textStart"
                             android:layout_gravity="start"
                             android:textAppearance="?android:attr/textAppearanceMedium"
@@ -297,6 +294,7 @@
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
                             android:hint="0"
+                            android:editable="false"
                             android:singleLine="true"
                             android:maxLines="1"
                             android:inputType="none"

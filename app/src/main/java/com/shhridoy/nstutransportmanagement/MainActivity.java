@@ -1,8 +1,11 @@
 package com.shhridoy.nstutransportmanagement;
 
 import android.annotation.SuppressLint;
+import android.app.ProgressDialog;
+import android.app.TimePickerDialog;
 import android.content.Context;
 import android.content.Intent;
+import android.net.ConnectivityManager;
 import android.os.Bundle;
 import android.os.Handler;
 import android.support.annotation.NonNull;
@@ -12,7 +15,11 @@ import android.support.design.widget.Snackbar;
 import android.support.v4.view.GravityCompat;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.AppCompatActivity;
+import android.support.v7.widget.LinearLayoutManager;
+import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
+import android.text.Layout;
+import android.util.Log;
 import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.MotionEvent;
@@ -29,8 +36,11 @@ import android.widget.RadioGroup;
 import android.widget.RelativeLayout;
 import android.widget.Spinner;
 import android.widget.TextView;
+import android.widget.TimePicker;
 import android.widget.Toast;
 
+import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.database.DataSnapshot;
@@ -38,7 +48,13 @@ import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
+import com.shhridoy.nstutransportmanagement.myObjects.BusSchedule;
 import com.shhridoy.nstutransportmanagement.myUtilities.AppPreferences;
+import com.shhridoy.nstutransportmanagement.myViews.RecyclerViewAdapter;
+
+import java.util.ArrayList;
+import java.util.Calendar;
+import java.util.List;
 
 import uk.co.chrisjenx.calligraphy.CalligraphyContextWrapper;
 
@@ -52,12 +68,33 @@ public class MainActivity extends AppCompatActivity {
     // views
     private CoordinatorLayout coordinatorLayout;
     private FloatingActionButton addScheduleFab;
+    private RecyclerView recyclerView;
 
-    // popup window
+    private RecyclerViewAdapter recyclerViewAdapter;
+    private List<BusSchedule> busSchedules;
+
+    // popup window views
     private PopupWindow mPopUpWindow;
+    private ArrayAdapter<String> arrayAdapter1, arrayAdapter2;
+    private RelativeLayout backDimRL = null;
+    private RelativeLayout mainRL = null;
+    private TextView popUpTitleTV = null;
+    private EditText busTitleET = null, startPointET = null, endPointET = null, timeET = null, goingET = null;
+    private Spinner startPointSpinner = null, endPointSpinner = null;
+    private RelativeLayout rlPopup = null;
     private RadioGroup radioGroup = null;
-    private RadioButton radioButton = null;
-    ArrayAdapter<String> arrayAdapter1, arrayAdapter2;
+    private RadioButton radioButton = null, teacherRb = null, studentRb = null, stuffRb = null;
+    private Button saveBtn = null;
+    private static final String[] spinnerItemList1 = {
+            "University Campus", "Begumgonj Chourasta", "Maijdee Bazar", "Sudaram Thana", "Boro Mashjid Mor", "Town Hall", "Cinema Hall",
+            "Boshur Haat", "Others"
+    };
+    private static final String[] spinnerItemList2 = {
+            "Begumgonj Chourasta", "Maijdee Bazar", "Sudaram Thana", "Boro Mashjid Mor", "Town Hall", "Cinema Hall",
+            "Boshur Haat", "Others"
+    };
+    private static final String[] spinnerItemList3 = {"University", "Others"};
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -76,12 +113,17 @@ public class MainActivity extends AppCompatActivity {
 
         coordinatorLayout = findViewById(R.id.coordinatorLayout);
         addScheduleFab = findViewById(R.id.fab);
+        recyclerView = findViewById(R.id.recyclerView);
+        recyclerView.setLayoutManager(new LinearLayoutManager(this));
+        recyclerView.setHasFixedSize(true);
+
+        busSchedules = new ArrayList<>();
 
         firebaseAuth = FirebaseAuth.getInstance();
         firebaseUser = firebaseAuth.getCurrentUser();
         databaseReference = FirebaseDatabase.getInstance().getReference();
 
-
+        getBusScheduleList();
 
     }
 
@@ -96,6 +138,37 @@ public class MainActivity extends AppCompatActivity {
             }
         });
 
+    }
+
+    private void getBusScheduleList() {
+        databaseReference.child("BusSchedules").addValueEventListener(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+
+                busSchedules.clear();
+
+                for(DataSnapshot ds : dataSnapshot.getChildren()) {
+                    String key = ds.child("key").getValue().toString();
+                    String bus_name = ds.child("bus_title").getValue().toString();
+                    String bus_type = ds.child("bus_type").getValue().toString();
+                    String start_point = ds.child("start_point").getValue().toString();
+                    String end_point = ds.child("end_point").getValue().toString();
+                    String start_time = ds.child("start_time").getValue().toString();
+                    String vote = ds.child("vote").getValue().toString();
+
+                    busSchedules.add(new BusSchedule(key, bus_name, bus_type, start_point, end_point, start_time, vote));
+                }
+
+                recyclerViewAdapter = new RecyclerViewAdapter(MainActivity.this, busSchedules, "Schedules");
+                recyclerView.setAdapter(recyclerViewAdapter);
+
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError databaseError) {
+
+            }
+        });
     }
 
     private void getUserData() {
@@ -155,7 +228,6 @@ public class MainActivity extends AppCompatActivity {
         startActivity(new Intent(getApplicationContext(), LoginActivity.class).setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP));
     }
 
-
     @Override
     protected void attachBaseContext(Context newBase) {
         super.attachBaseContext(CalligraphyContextWrapper.wrap(newBase));
@@ -182,15 +254,6 @@ public class MainActivity extends AppCompatActivity {
         }, 2000);
     }
 
-    private void getRadioButton() {
-        int buttonId = radioGroup.getCheckedRadioButtonId();
-        radioButton = findViewById(buttonId);
-    }
-
-    public void checkButton(View view) {
-        getRadioButton();
-    }
-
     @SuppressLint("InflateParams")
     private void busScheduleInputPopupWindow() {
 
@@ -205,24 +268,6 @@ public class MainActivity extends AppCompatActivity {
 
         mPopUpWindow = new PopupWindow(layout, width, height, true);
 
-        // popup window views
-        RelativeLayout backDimRL = null;
-        RelativeLayout mainRL = null;
-        TextView popUpTitleTV = null;
-        EditText busTitleET = null, startPointET = null, endPointET = null, timeET = null, goingET = null;
-        Spinner startPointSpinner = null, endPointSpinner = null;
-        RelativeLayout rlPopup = null;
-        Button saveBtn = null;
-        final String[] spinnerItemList1 = {
-                "University Campus", "Begumgonj Chourasta", "Maijdee Bazar", "Sudaram Thana", "Boro Mashjid Mor", "Town Hall", "Cinema Hall",
-                "Boshur Haat", "Others"
-        };
-        final String[] spinnerItemList2 = {
-                "Begumgonj Chourasta", "Maijdee Bazar", "Sudaram Thana", "Boro Mashjid Mor", "Town Hall", "Cinema Hall",
-                "Boshur Haat", "Others"
-        };
-        final String[] spinnerItemList3 = {"University", "Others"};
-
         if (layout != null) {
             backDimRL = layout.findViewById(R.id.dimRL);
             mainRL = layout.findViewById(R.id.main_popup);
@@ -233,17 +278,19 @@ public class MainActivity extends AppCompatActivity {
             endPointET = layout.findViewById(R.id.busSchedulePopupBusEndPointET);
             timeET = layout.findViewById(R.id.busSchedulePopupTimeET);
             goingET = layout.findViewById(R.id.busScheduleGoingET);
+            saveBtn = layout.findViewById(R.id.busScheduleSaveBtn);
+
             radioGroup = layout.findViewById(R.id.busSchedulePopupBusTypeRG);
-            getRadioButton();
+            teacherRb = layout.findViewById(R.id.radioBtnTeacher);
+            studentRb = layout.findViewById(R.id.radioBtnStudent);
+            stuffRb = layout.findViewById(R.id.radioBtnStuff);
+
             startPointSpinner = layout.findViewById(R.id.busSchedulePopupBusStartPointSpinner);
             endPointSpinner = layout.findViewById(R.id.busSchedulePopupBusEndPointSpinner);
 
             arrayAdapter1 = new ArrayAdapter<String>(this, R.layout.item_spinner, R.id.itemSpinnerTV, spinnerItemList1);
             startPointSpinner.setAdapter(arrayAdapter1);
 
-            if (startPointSpinner.getSelectedItem().toString().contains("University")) {
-
-            }
             arrayAdapter2 = new ArrayAdapter<String>(this, R.layout.item_spinner, R.id.itemSpinnerTV, spinnerItemList1);
             endPointSpinner.setAdapter(arrayAdapter2);
 
@@ -254,20 +301,26 @@ public class MainActivity extends AppCompatActivity {
         assert mainRL != null;
         mainRL.setLayoutParams(params);
 
+        assert goingET != null;
+        goingET.setFocusable(false);
 
-        final Spinner finalEndPointSpinner = endPointSpinner;
-        final EditText finalStartPointET = startPointET;
+        assert startPointSpinner != null;
         startPointSpinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
             @Override
             public void onItemSelected(AdapterView<?> adapterView, View view, int i, long l) {
-                if (spinnerItemList1[i].contains("University")) {
+
+                String item = adapterView.getItemAtPosition(i).toString();
+
+                if (item.contains("University")) {
                     arrayAdapter2 = new ArrayAdapter<String>(getApplicationContext(), R.layout.item_spinner, R.id.itemSpinnerTV, spinnerItemList2);
-                    finalEndPointSpinner.setAdapter(arrayAdapter2);
-                } else if (spinnerItemList1[i].contains("Others")) {
-                    finalStartPointET.setVisibility(View.VISIBLE);
+                    endPointSpinner.setAdapter(arrayAdapter2);
+                    startPointET.setVisibility(View.GONE);
+                } else if (item.contains("Others")) {
+                    startPointET.setVisibility(View.VISIBLE);
                 } else {
                     arrayAdapter2 = new ArrayAdapter<String>(getApplicationContext(), R.layout.item_spinner, R.id.itemSpinnerTV, spinnerItemList3);
-                    finalEndPointSpinner.setAdapter(arrayAdapter2);
+                    endPointSpinner.setAdapter(arrayAdapter2);
+                    startPointET.setVisibility(View.GONE);
                 }
 
             }
@@ -278,13 +331,15 @@ public class MainActivity extends AppCompatActivity {
             }
         });
 
-        final EditText finalEndPointET = endPointET;
+        assert endPointSpinner != null;
         endPointSpinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
             @Override
             public void onItemSelected(AdapterView<?> adapterView, View view, int i, long l) {
                 String item = adapterView.getItemAtPosition(i).toString();
                 if (item.contains("Others")) {
-                    finalEndPointET.setVisibility(View.VISIBLE);
+                    endPointET.setVisibility(View.VISIBLE);
+                } else {
+                    endPointET.setVisibility(View.GONE);
                 }
             }
 
@@ -294,6 +349,47 @@ public class MainActivity extends AppCompatActivity {
             }
         });
 
+        assert timeET != null;
+        timeET.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Calendar mcurrentTime = Calendar.getInstance();
+                int hour = mcurrentTime.get(Calendar.HOUR_OF_DAY);
+                int minute = mcurrentTime.get(Calendar.MINUTE);
+                TimePickerDialog mTimePicker;
+                mTimePicker = new TimePickerDialog(MainActivity.this, new TimePickerDialog.OnTimeSetListener() {
+                    @Override
+                    public void onTimeSet(TimePicker timePicker, int selectedHour, int selectedMinute) {
+                        timeET.setText(selectedHour + ":" + selectedMinute);
+                    }
+                }, hour, minute, false);//No 24 hour time
+                mTimePicker.setTitle("Select Time");
+                mTimePicker.show();
+            }
+        });
+
+        assert saveBtn != null;
+        final View finalLayout = layout;
+        saveBtn.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                if (isInternetOn()) {
+                    addBusScheduleToDB(
+                            finalLayout,
+                            busTitleET,
+                            radioGroup,
+                            startPointSpinner,
+                            endPointSpinner,
+                            startPointET,
+                            endPointET,
+                            timeET,
+                            goingET
+                    );
+                } else {
+                    Toast.makeText(getApplicationContext(), "Please check your internet connection!", Toast.LENGTH_LONG).show();
+                }
+            }
+        });
 
         assert backDimRL != null;
         backDimRL.setOnClickListener(new View.OnClickListener() {
@@ -339,8 +435,104 @@ public class MainActivity extends AppCompatActivity {
         mPopUpWindow.showAtLocation(layout, Gravity.CENTER, 0, 0);
     }
 
-    private void addBusScheduleToDB(EditText title, Spinner spinner) {
+    private void addBusScheduleToDB(
+            View view,
+            EditText bus_title,
+            RadioGroup rg,
+            Spinner spinner1, Spinner spinner2,
+            EditText start_point_et,
+            EditText end_point_et,
+            EditText time_et,
+            EditText going_et
+    ) {
 
+        String title = bus_title.getText().toString().trim();
+        String time = time_et.getText().toString().trim();
+
+        String type = "";
+        if (rg.getCheckedRadioButtonId() == -1) {
+            Toast.makeText(getApplicationContext(), "Please select Gender", Toast.LENGTH_SHORT).show();
+        } else {
+            // get selected radio button from radioGroup
+            int selectedId = rg.getCheckedRadioButtonId();
+            // find the radiobutton by returned id
+            radioButton = view.findViewById(selectedId);
+            type = radioButton.getText().toString().trim();
+        }
+
+        String start = "";
+        if (start_point_et.getVisibility() == View.VISIBLE) {
+            start = start_point_et.getText().toString().trim();
+        } else {
+            start = spinner1.getSelectedItem().toString().trim();
+        }
+
+        String end = "";
+        if (end_point_et.getVisibility() == View.VISIBLE) {
+            end = start_point_et.getText().toString().trim();
+        } else {
+            end = spinner2.getSelectedItem().toString().trim();
+        }
+
+        //Log.d("POPUP", title+" : "+type+" : " + start+" : "+end+" : "+ time+" : ");
+
+        if (title.length() <= 0 || type.length() <= 0 || start.length() <= 0 || end.length() <= 0 || time.length() <= 0) {
+            Toast.makeText(getApplicationContext(), "No field should be empty!!",Toast.LENGTH_LONG).show();
+        } else {
+
+            final ProgressDialog progressDialog = new ProgressDialog(MainActivity.this);
+            progressDialog.setMessage("Creating schedule....");
+            progressDialog.setCancelable(false);
+            progressDialog.show();
+
+            DatabaseReference scheduleRef = databaseReference.child("BusSchedules");
+
+            String busScheduleKey = scheduleRef.push().getKey();
+
+            final BusSchedule busSchedule = new BusSchedule(busScheduleKey, title, type, start, end, time, "0");
+
+            assert busScheduleKey != null;
+            scheduleRef.child(busScheduleKey).setValue(busSchedule)
+                    .addOnCompleteListener(new OnCompleteListener<Void>() {
+                        @Override
+                        public void onComplete(@NonNull Task<Void> task) {
+                            if (task.isSuccessful()) {
+                                progressDialog.dismiss();
+                                Toast.makeText(getApplicationContext(), "Schedule added.", Toast.LENGTH_SHORT).show();
+                                mPopUpWindow.dismiss();
+
+                            } else {
+                                progressDialog.dismiss();
+                                Toast.makeText(getApplicationContext(), "Schedule can't added!!", Toast.LENGTH_LONG).show();
+                            }
+                        }
+                    });
+
+        }
+
+    }
+
+    private boolean isInternetOn() {
+
+        // get Connectivity Manager object to check connection
+        getBaseContext();
+        ConnectivityManager connec = (ConnectivityManager) getSystemService(Context.CONNECTIVITY_SERVICE);
+
+        // Check for network connections
+        assert connec != null;
+        if (connec.getNetworkInfo(0).getState() == android.net.NetworkInfo.State.CONNECTED ||
+                connec.getNetworkInfo(0).getState() == android.net.NetworkInfo.State.CONNECTING ||
+                connec.getNetworkInfo(1).getState() == android.net.NetworkInfo.State.CONNECTING ||
+                connec.getNetworkInfo(1).getState() == android.net.NetworkInfo.State.CONNECTED) {
+
+            return true;
+        } else if (connec.getNetworkInfo(0).getState() == android.net.NetworkInfo.State.DISCONNECTED ||
+                connec.getNetworkInfo(1).getState() == android.net.NetworkInfo.State.DISCONNECTED) {
+
+            return false;
+        }
+
+        return false;
     }
 
 }
