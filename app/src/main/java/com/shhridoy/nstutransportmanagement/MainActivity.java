@@ -12,14 +12,10 @@ import android.support.annotation.NonNull;
 import android.support.design.widget.CoordinatorLayout;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.Snackbar;
-import android.support.v4.view.GravityCompat;
-import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
-import android.text.Layout;
-import android.util.Log;
 import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.MotionEvent;
@@ -58,6 +54,10 @@ import java.util.List;
 
 import uk.co.chrisjenx.calligraphy.CalligraphyContextWrapper;
 
+import static com.shhridoy.nstutransportmanagement.myUtilities.Constants.SPINNER_ITEM_LIST_1;
+import static com.shhridoy.nstutransportmanagement.myUtilities.Constants.SPINNER_ITEM_LIST_2;
+import static com.shhridoy.nstutransportmanagement.myUtilities.Constants.SPINNER_ITEM_LIST_3;
+
 public class MainActivity extends AppCompatActivity {
 
     // firebase objects
@@ -85,15 +85,6 @@ public class MainActivity extends AppCompatActivity {
     private RadioGroup radioGroup = null;
     private RadioButton radioButton = null, teacherRb = null, studentRb = null, stuffRb = null;
     private Button saveBtn = null;
-    private static final String[] spinnerItemList1 = {
-            "University Campus", "Begumgonj Chourasta", "Maijdee Bazar", "Sudaram Thana", "Boro Mashjid Mor", "Town Hall", "Cinema Hall",
-            "Boshur Haat", "Others"
-    };
-    private static final String[] spinnerItemList2 = {
-            "Begumgonj Chourasta", "Maijdee Bazar", "Sudaram Thana", "Boro Mashjid Mor", "Town Hall", "Cinema Hall",
-            "Boshur Haat", "Others"
-    };
-    private static final String[] spinnerItemList3 = {"University", "Others"};
 
 
     @Override
@@ -159,7 +150,7 @@ public class MainActivity extends AppCompatActivity {
                     busSchedules.add(new BusSchedule(key, bus_name, bus_type, start_point, end_point, start_time, vote));
                 }
 
-                recyclerViewAdapter = new RecyclerViewAdapter(MainActivity.this, busSchedules, "Schedules");
+                recyclerViewAdapter = new RecyclerViewAdapter(MainActivity.this, busSchedules, databaseReference, "Schedules");
                 recyclerView.setAdapter(recyclerViewAdapter);
 
             }
@@ -288,10 +279,10 @@ public class MainActivity extends AppCompatActivity {
             startPointSpinner = layout.findViewById(R.id.busSchedulePopupBusStartPointSpinner);
             endPointSpinner = layout.findViewById(R.id.busSchedulePopupBusEndPointSpinner);
 
-            arrayAdapter1 = new ArrayAdapter<String>(this, R.layout.item_spinner, R.id.itemSpinnerTV, spinnerItemList1);
+            arrayAdapter1 = new ArrayAdapter<String>(this, R.layout.item_spinner, R.id.itemSpinnerTV, SPINNER_ITEM_LIST_1);
             startPointSpinner.setAdapter(arrayAdapter1);
 
-            arrayAdapter2 = new ArrayAdapter<String>(this, R.layout.item_spinner, R.id.itemSpinnerTV, spinnerItemList1);
+            arrayAdapter2 = new ArrayAdapter<String>(this, R.layout.item_spinner, R.id.itemSpinnerTV, SPINNER_ITEM_LIST_1);
             endPointSpinner.setAdapter(arrayAdapter2);
 
         }
@@ -312,13 +303,13 @@ public class MainActivity extends AppCompatActivity {
                 String item = adapterView.getItemAtPosition(i).toString();
 
                 if (item.contains("University")) {
-                    arrayAdapter2 = new ArrayAdapter<String>(getApplicationContext(), R.layout.item_spinner, R.id.itemSpinnerTV, spinnerItemList2);
+                    arrayAdapter2 = new ArrayAdapter<String>(getApplicationContext(), R.layout.item_spinner, R.id.itemSpinnerTV, SPINNER_ITEM_LIST_2);
                     endPointSpinner.setAdapter(arrayAdapter2);
                     startPointET.setVisibility(View.GONE);
                 } else if (item.contains("Others")) {
                     startPointET.setVisibility(View.VISIBLE);
                 } else {
-                    arrayAdapter2 = new ArrayAdapter<String>(getApplicationContext(), R.layout.item_spinner, R.id.itemSpinnerTV, spinnerItemList3);
+                    arrayAdapter2 = new ArrayAdapter<String>(getApplicationContext(), R.layout.item_spinner, R.id.itemSpinnerTV, SPINNER_ITEM_LIST_3);
                     endPointSpinner.setAdapter(arrayAdapter2);
                     startPointET.setVisibility(View.GONE);
                 }
