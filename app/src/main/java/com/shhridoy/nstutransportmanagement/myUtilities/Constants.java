@@ -12,4 +12,11 @@ public class Constants {
     };
     public static final String[] SPINNER_ITEM_LIST_3 = {"University Campus", "Others"};
 
+
+    // recycler view adapter Tags
+    public static final String USER_TAG = "User";
+    public static final String ADMIN_TAG = "Admin";
+
+    public static final String ADMIN_EMAIL = "admin@gmail.com";
+
 }

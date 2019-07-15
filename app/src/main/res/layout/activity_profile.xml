@@ -1,0 +1,358 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context=".ProfileActivity"
+    android:background="@color/md_grey_200">
+
+    <android.support.v7.widget.CardView
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_marginTop="10dp"
+        android:layout_marginBottom="10dp"
+        android:layout_marginLeft="10dp"
+        android:layout_marginStart="10dp"
+        android:layout_marginEnd="10dp"
+        android:layout_marginRight="10dp"
+        app:cardCornerRadius="10dp"
+        app:cardElevation="7dp"
+        app:cardBackgroundColor="@android:color/white">
+
+        <ScrollView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content">
+
+            <LinearLayout
+                android:orientation="vertical"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:padding="10dp">
+
+                <TextView
+                    android:id="@+id/profileNameTV"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:text="Name"
+                    android:textAlignment="textStart"
+                    android:layout_gravity="start"
+                    android:textAppearance="?android:attr/textAppearanceSmall"
+                    android:textColor="@color/colorPrimary"
+                    android:textStyle="normal"
+                    android:layout_marginTop="20dp"
+                    android:paddingLeft="3dp"
+                    android:paddingStart="3dp"
+                    android:paddingEnd="0dp"
+                    android:paddingRight="0dp"/>
+
+                <EditText
+                    android:id="@+id/prfileNameET"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:hint="MD. Abul Kalam"
+                    android:editable="false"
+                    android:singleLine="true"
+                    android:maxLines="1"
+                    android:inputType="text"
+                    android:textAlignment="textStart"
+                    android:layout_gravity="start"
+                    android:textAppearance="?android:attr/textAppearanceMedium"
+                    android:textColor="@android:color/black"
+                    android:textStyle="normal"
+                    android:layout_marginTop="5dp"/>
+
+                <TextView
+                    android:id="@+id/profileDesignationTV"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:text="Designation"
+                    android:textAlignment="textStart"
+                    android:layout_gravity="start"
+                    android:textAppearance="?android:attr/textAppearanceSmall"
+                    android:textColor="@color/colorPrimary"
+                    android:textStyle="normal"
+                    android:layout_marginTop="10dp"
+                    android:paddingLeft="3dp"
+                    android:paddingStart="3dp"
+                    android:paddingEnd="0dp"
+                    android:paddingRight="0dp"/>
+
+                <EditText
+                    android:id="@+id/profileDesignationET"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:hint="Teacher"
+                    android:editable="false"
+                    android:singleLine="true"
+                    android:maxLines="1"
+                    android:inputType="text"
+                    android:textAlignment="textStart"
+                    android:layout_gravity="start"
+                    android:textAppearance="?android:attr/textAppearanceMedium"
+                    android:textColor="@android:color/black"
+                    android:textStyle="normal"
+                    android:layout_marginTop="5dp"/>
+
+                <TextView
+                    android:id="@+id/profileGenderTV"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:text="Gender"
+                    android:textAlignment="textStart"
+                    android:layout_gravity="start"
+                    android:textAppearance="?android:attr/textAppearanceSmall"
+                    android:textColor="@color/colorPrimary"
+                    android:textStyle="normal"
+                    android:layout_marginTop="10dp"
+                    android:paddingLeft="3dp"
+                    android:paddingStart="3dp"
+                    android:paddingEnd="0dp"
+                    android:paddingRight="0dp"/>
+
+                <RadioGroup
+                    android:id="@+id/profileGenderRG"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="horizontal"
+                    android:layout_marginTop="5dp">
+
+                    <RadioButton
+                        android:id="@+id/radioBtnMale"
+                        android:layout_width="0dp"
+                        android:layout_weight="1"
+                        android:layout_height="wrap_content"
+                        android:checked="true"
+                        android:text="Male"
+                        android:textAppearance="?android:attr/textAppearanceMedium"
+                        android:textStyle="normal"
+                        android:textColor="@color/md_grey_800" />
+
+                    <RadioButton
+                        android:id="@+id/radioBtnFemale"
+                        android:layout_width="0dp"
+                        android:layout_weight="1"
+                        android:layout_height="wrap_content"
+                        android:text="Female"
+                        android:textAppearance="?android:attr/textAppearanceMedium"
+                        android:textStyle="normal"
+                        android:textColor="@color/md_grey_800" />
+
+                    <RadioButton
+                        android:id="@+id/radioBtnOthers"
+                        android:layout_width="0dp"
+                        android:layout_weight="1"
+                        android:layout_height="wrap_content"
+                        android:text="Others"
+                        android:textAppearance="?android:attr/textAppearanceMedium"
+                        android:textStyle="normal"
+                        android:textColor="@color/md_grey_800" />
+
+                </RadioGroup>
+
+                <TextView
+                    android:id="@+id/profileMobileNmbrTV"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:text="Mobile Number"
+                    android:textAlignment="textStart"
+                    android:layout_gravity="start"
+                    android:textAppearance="?android:attr/textAppearanceSmall"
+                    android:textColor="@color/colorPrimary"
+                    android:textStyle="normal"
+                    android:layout_marginTop="10dp"
+                    android:paddingLeft="3dp"
+                    android:paddingStart="3dp"
+                    android:paddingEnd="0dp"
+                    android:paddingRight="0dp"/>
+
+                <EditText
+                    android:id="@+id/profileMobileNmbrET"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:hint="0171xxxxxxx"
+                    android:singleLine="true"
+                    android:editable="false"
+                    android:maxLines="1"
+                    android:inputType="phone"
+                    android:textAlignment="textStart"
+                    android:layout_gravity="start"
+                    android:textAppearance="?android:attr/textAppearanceMedium"
+                    android:textColor="@android:color/black"
+                    android:textStyle="normal"
+                    android:layout_marginTop="5dp"/>
+
+                <TextView
+                    android:id="@+id/profileEmailTV"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:text="Email"
+                    android:textAlignment="textStart"
+                    android:layout_gravity="start"
+                    android:textAppearance="?android:attr/textAppearanceSmall"
+                    android:textColor="@color/colorPrimary"
+                    android:textStyle="normal"
+                    android:layout_marginTop="10dp"
+                    android:paddingLeft="3dp"
+                    android:paddingStart="3dp"
+                    android:paddingEnd="0dp"
+                    android:paddingRight="0dp"/>
+
+                <EditText
+                    android:id="@+id/profileEmailET"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:hint="example@gmail.com"
+                    android:editable="false"
+                    android:singleLine="true"
+                    android:maxLines="1"
+                    android:inputType="textEmailAddress"
+                    android:textAlignment="textStart"
+                    android:layout_gravity="start"
+                    android:textAppearance="?android:attr/textAppearanceMedium"
+                    android:textColor="@android:color/black"
+                    android:textStyle="normal"
+                    android:layout_marginTop="5dp"/>
+
+                <TextView
+                    android:id="@+id/profilePasswordTV1"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:text="Password"
+                    android:paddingLeft="3dp"
+                    android:paddingStart="3dp"
+                    android:paddingEnd="0dp"
+                    android:paddingRight="0dp"
+                    android:textAlignment="textStart"
+                    android:layout_gravity="start"
+                    android:textAppearance="?android:attr/textAppearanceSmall"
+                    android:textColor="@color/colorPrimary"
+                    android:textStyle="normal"
+                    android:layout_marginTop="10dp"/>
+
+                <RelativeLayout
+                    android:visibility="visible"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="5dp">
+
+                    <EditText
+                        android:id="@+id/profilePasswordET1"
+                        android:visibility="visible"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:editable="false"
+                        android:hint="password123"
+                        android:singleLine="true"
+                        android:maxLines="1"
+                        android:inputType="textPassword"
+                        android:textAlignment="textStart"
+                        android:layout_gravity="start"
+                        android:textAppearance="?android:attr/textAppearanceMedium"
+                        android:textColor="@android:color/black"
+                        android:textStyle="normal"
+                        android:layout_marginTop="0dp"/>
+
+                    <ImageButton
+                        android:id="@+id/visibilityImgBtn1"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:src="@drawable/ic_action_visibility_off"
+                        android:background="@android:color/transparent"
+                        android:layout_centerVertical="true"
+                        android:layout_alignParentEnd="true"
+                        android:layout_alignParentRight="true"
+                        android:layout_marginEnd="5dp"
+                        android:layout_marginRight="5dp"/>
+
+                </RelativeLayout>
+
+                <TextView
+                    android:id="@+id/profilePasswordTV2"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:text="Re-type Password"
+                    android:visibility="gone"
+                    android:editable="false"
+                    android:paddingLeft="3dp"
+                    android:paddingStart="3dp"
+                    android:paddingEnd="0dp"
+                    android:paddingRight="0dp"
+                    android:textAlignment="textStart"
+                    android:layout_gravity="start"
+                    android:textAppearance="?android:attr/textAppearanceSmall"
+                    android:textColor="@color/colorPrimary"
+                    android:textStyle="normal"
+                    android:layout_marginTop="10dp"/>
+
+                <RelativeLayout
+                    android:visibility="gone"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="5dp">
+
+                    <EditText
+                        android:id="@+id/profilePasswordET2"
+                        android:visibility="visible"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:editable="false"
+                        android:hint="password123"
+                        android:singleLine="true"
+                        android:maxLines="1"
+                        android:inputType="textPassword"
+                        android:textAlignment="textStart"
+                        android:layout_gravity="start"
+                        android:textAppearance="?android:attr/textAppearanceMedium"
+                        android:textColor="@android:color/black"
+                        android:textStyle="normal"
+                        android:layout_marginTop="0dp"/>
+
+                    <ImageButton
+                        android:id="@+id/visibilityImgBtn2"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:src="@drawable/ic_action_visibility_off"
+                        android:background="@android:color/transparent"
+                        android:layout_centerVertical="true"
+                        android:layout_alignParentEnd="true"
+                        android:layout_alignParentRight="true"
+                        android:layout_marginEnd="5dp"
+                        android:layout_marginRight="5dp"/>
+
+                </RelativeLayout>
+
+                <Button
+                    android:visibility="gone"
+                    android:id="@+id/profileSaveBtn"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center_horizontal"
+                    android:gravity="center"
+                    android:text="SAVE"
+                    android:textAllCaps="true"
+                    android:shadowRadius="2"
+                    android:shadowDy="1"
+                    android:shadowDx="1"
+                    android:shadowColor="@android:color/black"
+                    android:textStyle="bold"
+                    android:textAppearance="?android:attr/textAppearanceMedium"
+                    android:textSize="18sp"
+                    android:textColor="@android:color/white"
+                    android:background="@drawable/button_shape"
+                    android:paddingLeft="50dp"
+                    android:paddingStart="50dp"
+                    android:paddingEnd="50dp"
+                    android:paddingRight="50dp"
+                    android:paddingTop="10dp"
+                    android:paddingBottom="10dp"
+                    android:layout_marginTop="20dp"/>
+
+            </LinearLayout>
+
+
+        </ScrollView>
+
+    </android.support.v7.widget.CardView>
+
+</RelativeLayout>

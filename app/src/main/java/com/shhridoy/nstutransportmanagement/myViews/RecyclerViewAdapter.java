@@ -39,9 +39,11 @@ import java.util.Arrays;
 import java.util.Calendar;
 import java.util.List;
 
+import static com.shhridoy.nstutransportmanagement.myUtilities.Constants.ADMIN_TAG;
 import static com.shhridoy.nstutransportmanagement.myUtilities.Constants.SPINNER_ITEM_LIST_1;
 import static com.shhridoy.nstutransportmanagement.myUtilities.Constants.SPINNER_ITEM_LIST_2;
 import static com.shhridoy.nstutransportmanagement.myUtilities.Constants.SPINNER_ITEM_LIST_3;
+import static com.shhridoy.nstutransportmanagement.myUtilities.Constants.USER_TAG;
 
 public class RecyclerViewAdapter extends RecyclerView.Adapter<RecyclerViewAdapter.ViewHolder> {
 
@@ -97,6 +99,16 @@ public class RecyclerViewAdapter extends RecyclerView.Adapter<RecyclerViewAdapte
         previousPosition = position;
         AnimationUtils.setFadeAnimation(holder.itemView);*/
 
+        if (tag.equalsIgnoreCase(ADMIN_TAG)) {
+            holder.editBtn.setVisibility(View.VISIBLE);
+            holder.deleteBtn.setVisibility(View.VISIBLE);
+            holder.voteBtn.setVisibility(View.GONE);
+        } else {
+            holder.editBtn.setVisibility(View.GONE);
+            holder.deleteBtn.setVisibility(View.GONE);
+            holder.voteBtn.setVisibility(View.VISIBLE);
+        }
+
         final String key = busScheduleList.get(position).getKey();
         final String busTitle = busScheduleList.get(position).getBus_title();
         final String busType = busScheduleList.get(position).getBus_type();
@@ -151,6 +163,24 @@ public class RecyclerViewAdapter extends RecyclerView.Adapter<RecyclerViewAdapte
         });
 
 
+        holder.voteBtn.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                String vote = String.valueOf(Integer.parseInt(going)+1);
+                databaseReference.child("BusSchedules").child(key).child("vote").setValue(vote)
+                        .addOnCompleteListener(new OnCompleteListener<Void>() {
+                    @Override
+                    public void onComplete(@NonNull Task<Void> task) {
+                        if (task.isSuccessful()) {
+                            Toast.makeText(context, "Voted!", Toast.LENGTH_SHORT).show();
+                        } else {
+                            Toast.makeText(context, "Voting failed!!", Toast.LENGTH_SHORT).show();
+                        }
+                    }
+                });
+            }
+        });
+
 
     }
 
@@ -168,13 +198,14 @@ public class RecyclerViewAdapter extends RecyclerView.Adapter<RecyclerViewAdapte
     class ViewHolder extends RecyclerView.ViewHolder {//implements View.OnClickListener {
 
         TextView textView;
-        ImageButton deleteBtn, editBtn;
+        ImageButton deleteBtn, editBtn, voteBtn;
 
         ViewHolder(View itemView) {
             super(itemView);
             textView = itemView.findViewById(R.id.textView);
             deleteBtn = itemView.findViewById(R.id.deleteBtn);
             editBtn = itemView.findViewById(R.id.editBtn);
+            voteBtn = itemView.findViewById(R.id.voteBtn);
             //itemView.setOnClickListener(this);
         }
 

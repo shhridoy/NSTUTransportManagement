@@ -54,9 +54,12 @@ import java.util.List;
 
 import uk.co.chrisjenx.calligraphy.CalligraphyContextWrapper;
 
+import static com.shhridoy.nstutransportmanagement.myUtilities.Constants.ADMIN_EMAIL;
+import static com.shhridoy.nstutransportmanagement.myUtilities.Constants.ADMIN_TAG;
 import static com.shhridoy.nstutransportmanagement.myUtilities.Constants.SPINNER_ITEM_LIST_1;
 import static com.shhridoy.nstutransportmanagement.myUtilities.Constants.SPINNER_ITEM_LIST_2;
 import static com.shhridoy.nstutransportmanagement.myUtilities.Constants.SPINNER_ITEM_LIST_3;
+import static com.shhridoy.nstutransportmanagement.myUtilities.Constants.USER_TAG;
 
 public class MainActivity extends AppCompatActivity {
 
@@ -114,6 +117,12 @@ public class MainActivity extends AppCompatActivity {
         firebaseUser = firebaseAuth.getCurrentUser();
         databaseReference = FirebaseDatabase.getInstance().getReference();
 
+        if (AppPreferences.getPreferenceEmail(this).equalsIgnoreCase(ADMIN_EMAIL)) {
+            addScheduleFab.show();
+        } else {
+            addScheduleFab.hide();
+        }
+
         getBusScheduleList();
 
     }
@@ -150,7 +159,12 @@ public class MainActivity extends AppCompatActivity {
                     busSchedules.add(new BusSchedule(key, bus_name, bus_type, start_point, end_point, start_time, vote));
                 }
 
-                recyclerViewAdapter = new RecyclerViewAdapter(MainActivity.this, busSchedules, databaseReference, "Schedules");
+                if (AppPreferences.getPreferenceEmail(MainActivity.this).equalsIgnoreCase(ADMIN_EMAIL)) {
+                    recyclerViewAdapter = new RecyclerViewAdapter(MainActivity.this, busSchedules, databaseReference, ADMIN_TAG);
+                } else {
+                    recyclerViewAdapter = new RecyclerViewAdapter(MainActivity.this, busSchedules, databaseReference, USER_TAG);
+                }
+
                 recyclerView.setAdapter(recyclerViewAdapter);
 
             }

@@ -10,38 +10,55 @@
         android:layout_margin="5dp"
         android:background="@color/colorPrimary">
 
-        <ImageButton
-            android:id="@+id/deleteBtn"
+        <LinearLayout
+            android:id="@+id/LL"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:src="@android:drawable/ic_delete"
-            android:background="@android:color/transparent"
+            android:orientation="horizontal"
             android:layout_centerVertical="true"
             android:layout_alignParentEnd="true"
             android:layout_alignParentRight="true"
-            android:layout_marginEnd="5dp"
-            android:layout_marginRight="5dp"
-            android:padding="8dp"/>
+            android:gravity="center_vertical">
 
-        <ImageButton
-            android:id="@+id/editBtn"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_toStartOf="@id/deleteBtn"
-            android:layout_toLeftOf="@id/deleteBtn"
-            android:src="@android:drawable/ic_menu_edit"
-            android:background="@android:color/transparent"
-            android:layout_centerVertical="true"
-            android:layout_marginEnd="5dp"
-            android:layout_marginRight="5dp"
-            android:padding="8dp"/>
+            <ImageButton
+                android:id="@+id/editBtn"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:src="@android:drawable/ic_menu_edit"
+                android:background="@android:color/transparent"
+                android:layout_marginEnd="5dp"
+                android:layout_marginRight="5dp"
+                android:padding="8dp"/>
+
+            <ImageButton
+                android:id="@+id/deleteBtn"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:src="@android:drawable/ic_delete"
+                android:background="@android:color/transparent"
+                android:layout_marginEnd="5dp"
+                android:layout_marginRight="5dp"
+                android:padding="8dp"/>
+
+            <ImageButton
+                android:visibility="gone"
+                android:id="@+id/voteBtn"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:src="@drawable/ic_action_vote"
+                android:background="@android:color/transparent"
+                android:layout_marginEnd="5dp"
+                android:layout_marginRight="5dp"
+                android:padding="8dp"/>
+
+        </LinearLayout>
 
         <TextView
             android:id="@+id/textView"
             android:layout_alignParentStart="true"
             android:layout_alignParentLeft="true"
-            android:layout_toStartOf="@id/editBtn"
-            android:layout_toLeftOf="@id/editBtn"
+            android:layout_toStartOf="@id/LL"
+            android:layout_toLeftOf="@id/LL"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:minHeight="100dp"
