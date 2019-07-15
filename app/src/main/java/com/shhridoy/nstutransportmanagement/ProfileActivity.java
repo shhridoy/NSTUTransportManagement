@@ -45,8 +45,8 @@ public class ProfileActivity extends AppCompatActivity {
     // views
     private EditText nameET, designationET, phoneET, emailET, passwordET1, passwordET2;
     private ImageButton visibilityImgBtn1, visibilityImgBtn2;
-    private RadioGroup radioGroup;
-    private RadioButton radioButton, maleRB, femaleRB, othersRB;
+    private RadioGroup radioGroupGender, radioGroupDesignation;
+    private RadioButton maleRB, femaleRB, othersRB;
     private Button saveBtn;
     boolean isPassword1Visible = false;
     boolean isPassword2Visible = false;
@@ -79,7 +79,8 @@ public class ProfileActivity extends AppCompatActivity {
         passwordET2 = findViewById(R.id.profilePasswordET2);
         visibilityImgBtn1 = findViewById(R.id.visibilityImgBtn1);
         visibilityImgBtn2 = findViewById(R.id.visibilityImgBtn2);
-        radioGroup = findViewById(R.id.profileGenderRG);
+        radioGroupGender = findViewById(R.id.profileGenderRG);
+        radioGroupDesignation = findViewById(R.id.profileDesignationRG);
         maleRB = findViewById(R.id.radioBtnMale);
         femaleRB = findViewById(R.id.radioBtnFemale);
         othersRB = findViewById(R.id.radioBtnOthers);
@@ -154,8 +155,11 @@ public class ProfileActivity extends AppCompatActivity {
             passwordET2.setFocusable(false);
             passwordET2.setFocusableInTouchMode(false);
             passwordET2.setEnabled(false);
-            for(int i = 0; i < radioGroup.getChildCount(); i++){
-                radioGroup.getChildAt(i).setEnabled(false);
+            for(int i = 0; i < radioGroupDesignation.getChildCount(); i++){
+                radioGroupDesignation.getChildAt(i).setEnabled(false);
+            }
+            for(int i = 0; i < radioGroupGender.getChildCount(); i++){
+                radioGroupGender.getChildAt(i).setEnabled(false);
             }
             saveBtn.setVisibility(View.GONE);
         } else {
@@ -175,8 +179,11 @@ public class ProfileActivity extends AppCompatActivity {
             passwordET2.setFocusable(true);
             passwordET2.setFocusableInTouchMode(true);
             passwordET2.setEnabled(true);
-            for(int i = 0; i < radioGroup.getChildCount(); i++){
-                radioGroup.getChildAt(i).setEnabled(true);
+            for(int i = 0; i < radioGroupDesignation.getChildCount(); i++){
+                radioGroupDesignation.getChildAt(i).setEnabled(true);
+            }
+            for(int i = 0; i < radioGroupGender.getChildCount(); i++){
+                radioGroupGender.getChildAt(i).setEnabled(true);
             }
             saveBtn.setVisibility(View.VISIBLE);
         }
@@ -209,27 +216,43 @@ public class ProfileActivity extends AppCompatActivity {
         emailET.setText(email);
         passwordET1.setText(pass);
         if (gender.contains("Male")) {
-            radioGroup.check(R.id.radioBtnMale);
+            radioGroupGender.check(R.id.radioBtnMale);
         } else if (gender.contains("Female")) {
-            radioGroup.check(R.id.radioBtnFemale);
+            radioGroupGender.check(R.id.radioBtnFemale);
         } else {
-            radioGroup.check(R.id.radioBtnOthers);
+            radioGroupGender.check(R.id.radioBtnOthers);
+        }
+        if (designation.contains("Student")) {
+            radioGroupDesignation.check(R.id.radioBtnStudent);
+        } else if (designation.contains("Teacher")) {
+            radioGroupDesignation.check(R.id.radioBtnTeacher);
+        } else {
+            radioGroupDesignation.check(R.id.radioBtnStuff);
         }
     }
 
     private void updateUserProfile() {
 
         final String name = nameET.getText().toString().trim();
-        final String designation = designationET.getText().toString().trim();
+        String designation = "";//designationET.getText().toString().trim();
+        if (radioGroupDesignation.getCheckedRadioButtonId() == -1) {
+            Toast.makeText(getApplicationContext(), "Please select Designation", Toast.LENGTH_SHORT).show();
+        } else {
+            // get selected radio button from radioGroup
+            int selectedId = radioGroupDesignation.getCheckedRadioButtonId();
+            // find the radiobutton by returned id
+            RadioButton radioButtonDesignation = findViewById(selectedId);
+            designation = radioButtonDesignation.getText().toString().trim();
+        }
         String gender = "";
-        if (radioGroup.getCheckedRadioButtonId() == -1) {
+        if (radioGroupGender.getCheckedRadioButtonId() == -1) {
             Toast.makeText(getApplicationContext(), "Please select Gender", Toast.LENGTH_SHORT).show();
         } else {
             // get selected radio button from radioGroup
-            int selectedId = radioGroup.getCheckedRadioButtonId();
+            int selectedId = radioGroupGender.getCheckedRadioButtonId();
             // find the radiobutton by returned id
-            radioButton = findViewById(selectedId);
-            gender = radioButton.getText().toString().trim();
+            RadioButton radioButtonGender = findViewById(selectedId);
+            gender = radioButtonGender.getText().toString().trim();
         }
         final String mobile = phoneET.getText().toString().trim();
         final String email = emailET.getText().toString().trim();

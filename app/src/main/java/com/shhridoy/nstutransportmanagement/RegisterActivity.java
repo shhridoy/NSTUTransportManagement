@@ -37,7 +37,7 @@ public class RegisterActivity extends AppCompatActivity {
     EditText nameET, designationET, mobileET, emailET, passwordET1, passwordET2;
     TextView nameTV, designationTV, genderTV, mobileTV, emailTV, passwordTV1, passwordTV2;
     TextView signinTV;
-    RadioGroup radioGroup;
+    RadioGroup radioGroupGender, radioGroupDesignation;
     RadioButton radioButton, maleRB, femaleRB, othersRB;
     boolean isPassword1Visible = false;
     boolean isPassword2Visible = false;
@@ -79,7 +79,8 @@ public class RegisterActivity extends AppCompatActivity {
         passwordTV1 = findViewById(R.id.registerPasswordTV1);
         passwordTV2 = findViewById(R.id.registerPasswordTV2);
 
-        radioGroup = findViewById(R.id.registerGenderRG);
+        radioGroupGender = findViewById(R.id.registerGenderRG);
+        radioGroupDesignation = findViewById(R.id.registerDesignationRG);
 
         signinTV = findViewById(R.id.signinTV);
         signinTV.setText(Html.fromHtml("<u>Already have an account? Sign in</u>"));
@@ -91,7 +92,7 @@ public class RegisterActivity extends AppCompatActivity {
     }
 
     private void getRadioButton() {
-        int buttonId = radioGroup.getCheckedRadioButtonId();
+        int buttonId = radioGroupGender.getCheckedRadioButtonId();
         radioButton = findViewById(buttonId);
     }
 
@@ -159,14 +160,25 @@ public class RegisterActivity extends AppCompatActivity {
     private void signupAndSaveToDatabase() {
 
         final String name = nameET.getText().toString().trim();
-        final String designation = designationET.getText().toString().trim();
+        //final String designation = designationET.getText().toString().trim();
         final String gender = radioButton.getText().toString().trim();
         final String mobile = mobileET.getText().toString().trim();
         final String email = emailET.getText().toString().trim();
         final String password1 = passwordET1.getText().toString().trim();
         String password2 = passwordET2.getText().toString().trim();
+        String desig = "";
+        if (radioGroupDesignation.getCheckedRadioButtonId() == -1) {
+            Toast.makeText(getApplicationContext(), "Please select Gender", Toast.LENGTH_SHORT).show();
+        } else {
+            // get selected radio button from radioGroup
+            int selectedId = radioGroupDesignation.getCheckedRadioButtonId();
+            // find the radiobutton by returned id
+            RadioButton radioButtonDesignation = findViewById(selectedId);
+            desig = radioButtonDesignation.getText().toString().trim();
+        }
 
-        if (name.length()<=0 || designation.length()<=0 || gender.length()<=0 || email.length()<=0 || password1.length()<=0 || password2.length()<=0) {
+
+        if (name.length()<=0 || desig.length()<=0 || gender.length()<=0 || email.length()<=0 || password1.length()<=0 || password2.length()<=0) {
 
             Toast.makeText(getApplicationContext(), "(*) Asterick field can't be empty!!", Toast.LENGTH_LONG).show();
 
@@ -183,6 +195,7 @@ public class RegisterActivity extends AppCompatActivity {
             progressDialog.setCancelable(false);
             progressDialog.show();
 
+            final String finalDesig = desig;
             firebaseAuth.createUserWithEmailAndPassword(email, password1)
                     .addOnCompleteListener(new OnCompleteListener<AuthResult>() {
                         @Override
@@ -191,7 +204,7 @@ public class RegisterActivity extends AppCompatActivity {
 
                                 firebaseUser = firebaseAuth.getCurrentUser();
 
-                                final Profile profile = new Profile(name, designation, gender, mobile, email, password1);
+                                final Profile profile = new Profile(name, finalDesig, gender, mobile, email, password1);
 
                                 dbRef.child(firebaseUser.getUid()).setValue(profile)
                                         .addOnCompleteListener(new OnCompleteListener<Void>() {

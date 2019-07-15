@@ -5,6 +5,7 @@ import android.app.ProgressDialog;
 import android.app.TimePickerDialog;
 import android.content.Context;
 import android.content.Intent;
+import android.graphics.Color;
 import android.net.ConnectivityManager;
 import android.os.Bundle;
 import android.os.Handler;
@@ -68,13 +69,18 @@ public class MainActivity extends AppCompatActivity {
     private FirebaseUser firebaseUser;
     private DatabaseReference databaseReference;
 
+    private static String Designation = null;
+
     // views
     private CoordinatorLayout coordinatorLayout;
     private FloatingActionButton addScheduleFab;
     private RecyclerView recyclerView;
+    private Button toCampusBtn, fromCampusBtn;
 
     private RecyclerViewAdapter recyclerViewAdapter;
     private List<BusSchedule> busSchedules;
+    private List<BusSchedule> toCampusBusSchedule, fromCampusBusSchedule;
+    boolean isAdmin = false, isToCampusSelected = true, isFromCampusSelected = false;
 
     // popup window views
     private PopupWindow mPopUpWindow;
@@ -107,11 +113,17 @@ public class MainActivity extends AppCompatActivity {
 
         coordinatorLayout = findViewById(R.id.coordinatorLayout);
         addScheduleFab = findViewById(R.id.fab);
+        toCampusBtn = findViewById(R.id.toCampusBtn);
+        fromCampusBtn = findViewById(R.id.fromCampusBtn);
         recyclerView = findViewById(R.id.recyclerView);
         recyclerView.setLayoutManager(new LinearLayoutManager(this));
         recyclerView.setHasFixedSize(true);
 
+        selectToCampus(true);
+
         busSchedules = new ArrayList<>();
+        toCampusBusSchedule = new ArrayList<>();
+        fromCampusBusSchedule = new ArrayList<>();
 
         firebaseAuth = FirebaseAuth.getInstance();
         firebaseUser = firebaseAuth.getCurrentUser();
@@ -123,7 +135,65 @@ public class MainActivity extends AppCompatActivity {
             addScheduleFab.hide();
         }
 
-        getBusScheduleList();
+        getUserDesignationData();
+        //getBusScheduleList();
+
+        isAdmin = AppPreferences.getPreferenceEmail(MainActivity.this).equalsIgnoreCase(ADMIN_EMAIL);
+
+    }
+
+    private void selectToCampus(boolean b) {
+        if (b) {
+            toCampusBtn.setBackgroundColor(getResources().getColor(R.color.colorPrimary));
+            toCampusBtn.setTextColor(Color.WHITE);
+            fromCampusBtn.setBackgroundColor(getResources().getColor(R.color.md_grey_200));
+            fromCampusBtn.setTextColor(Color.DKGRAY);
+            isToCampusSelected = true;
+            isFromCampusSelected = false;
+        } else {
+            toCampusBtn.setBackgroundColor(getResources().getColor(R.color.md_grey_200));
+            toCampusBtn.setTextColor(Color.DKGRAY);
+            fromCampusBtn.setBackgroundColor(getResources().getColor(R.color.colorPrimary));
+            fromCampusBtn.setTextColor(Color.WHITE);
+            isToCampusSelected = false;
+            isFromCampusSelected = true;
+
+        }
+    }
+
+    private void loadToCampusBusScheduleList() {
+        toCampusBusSchedule.clear();
+        for (int i=0; i<busSchedules.size(); i++) {
+            if (busSchedules.get(i).getEnd_point().contains("University") || busSchedules.get(i).getEnd_point().contains("university") ||
+                    busSchedules.get(i).getEnd_point().contains("Campus") || busSchedules.get(i).getEnd_point().contains("campus")
+            ) {
+                toCampusBusSchedule.add(busSchedules.get(i));
+            }
+        }
+
+        if (isAdmin) {
+            recyclerViewAdapter = new RecyclerViewAdapter(MainActivity.this, toCampusBusSchedule, databaseReference, ADMIN_TAG);
+        } else {
+            recyclerViewAdapter = new RecyclerViewAdapter(MainActivity.this, toCampusBusSchedule, databaseReference, USER_TAG);
+        }
+        recyclerView.setAdapter(recyclerViewAdapter);
+    }
+
+    private void loadFromCampusBusScheduleList() {
+        fromCampusBusSchedule.clear();
+        for (int i=0; i<busSchedules.size(); i++) {
+            if (busSchedules.get(i).getStart_point().contains("University") || busSchedules.get(i).getStart_point().contains("university") ||
+                    busSchedules.get(i).getStart_point().contains("Campus") || busSchedules.get(i).getStart_point().contains("campus")
+            ) {
+                fromCampusBusSchedule.add(busSchedules.get(i));
+            }
+        }
+        if (isAdmin) {
+            recyclerViewAdapter = new RecyclerViewAdapter(MainActivity.this, fromCampusBusSchedule, databaseReference, ADMIN_TAG);
+        } else {
+            recyclerViewAdapter = new RecyclerViewAdapter(MainActivity.this, fromCampusBusSchedule, databaseReference, USER_TAG);
+        }
+        recyclerView.setAdapter(recyclerViewAdapter);
 
     }
 
@@ -135,6 +205,22 @@ public class MainActivity extends AppCompatActivity {
                 //Snackbar.make(view, "Replace with your own action", Snackbar.LENGTH_LONG)
                   //      .setAction("Action", null).show();
                 busScheduleInputPopupWindow();
+            }
+        });
+
+        toCampusBtn.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                loadToCampusBusScheduleList();
+                selectToCampus(true);
+            }
+        });
+
+        fromCampusBtn.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                loadFromCampusBusScheduleList();
+                selectToCampus(false);
             }
         });
 
@@ -156,16 +242,21 @@ public class MainActivity extends AppCompatActivity {
                     String start_time = ds.child("start_time").getValue().toString();
                     String vote = ds.child("vote").getValue().toString();
 
-                    busSchedules.add(new BusSchedule(key, bus_name, bus_type, start_point, end_point, start_time, vote));
+                    if (isAdmin) {
+                        busSchedules.add(new BusSchedule(key, bus_name, bus_type, start_point, end_point, start_time, vote));
+                    } else {
+                        if (Designation != null && (Designation.equalsIgnoreCase(bus_type) || Designation.contains(bus_type))) {
+                            busSchedules.add(new BusSchedule(key, bus_name, bus_type, start_point, end_point, start_time, vote));
+                        }
+                    }
+
                 }
 
-                if (AppPreferences.getPreferenceEmail(MainActivity.this).equalsIgnoreCase(ADMIN_EMAIL)) {
-                    recyclerViewAdapter = new RecyclerViewAdapter(MainActivity.this, busSchedules, databaseReference, ADMIN_TAG);
+                if (isToCampusSelected) {
+                    loadToCampusBusScheduleList();
                 } else {
-                    recyclerViewAdapter = new RecyclerViewAdapter(MainActivity.this, busSchedules, databaseReference, USER_TAG);
+                    loadFromCampusBusScheduleList();
                 }
-
-                recyclerView.setAdapter(recyclerViewAdapter);
 
             }
 
@@ -176,18 +267,20 @@ public class MainActivity extends AppCompatActivity {
         });
     }
 
-    private void getUserData() {
+    private void getUserDesignationData() {
         databaseReference.child("Users").child(firebaseAuth.getUid()).addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
-                String name = dataSnapshot.child("name").getValue().toString();
-                String pass = dataSnapshot.child("password").getValue().toString();
-                String gender = dataSnapshot.child("gender").getValue().toString();
-                String email = dataSnapshot.child("email").getValue().toString();
-                String mobile = dataSnapshot.child("mobile").getValue().toString();
+                //String name = dataSnapshot.child("name").getValue().toString();
+                //String pass = dataSnapshot.child("password").getValue().toString();
+                //String gender = dataSnapshot.child("gender").getValue().toString();
+                //String email = dataSnapshot.child("email").getValue().toString();
+                //String mobile = dataSnapshot.child("mobile").getValue().toString();
                 String designation = dataSnapshot.child("designation").getValue().toString();
+                Designation = designation;
+                getBusScheduleList();
                 //detailTV.setText("Name: "+name+"\nDesignation: "+designation+"\nPhone: "+phone+"\nE-mail: "+email+"\nPassword: "+pass);
-                Toast.makeText(getApplicationContext(), name+"\n"+gender+"\n"+designation+"\n"+mobile+"\n"+email+"\n"+pass, Toast.LENGTH_LONG).show();
+                //Toast.makeText(getApplicationContext(), name+"\n"+gender+"\n"+designation+"\n"+mobile+"\n"+email+"\n"+pass, Toast.LENGTH_LONG).show();
             }
 
             @Override

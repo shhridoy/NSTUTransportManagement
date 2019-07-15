@@ -117,10 +117,51 @@
                     android:paddingEnd="0dp"
                     android:paddingRight="0dp"/>
 
+                <RadioGroup
+                    android:id="@+id/registerDesignationRG"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="horizontal"
+                    android:layout_marginTop="5dp">
+
+                    <RadioButton
+                        android:id="@+id/radioBtnTeacher"
+                        android:layout_width="0dp"
+                        android:layout_weight="1"
+                        android:layout_height="wrap_content"
+                        android:checked="true"
+                        android:text="Teacher"
+                        android:textAppearance="?android:attr/textAppearanceMedium"
+                        android:textStyle="normal"
+                        android:textColor="@color/md_grey_800" />
+
+                    <RadioButton
+                        android:id="@+id/radioBtnStudent"
+                        android:layout_width="0dp"
+                        android:layout_weight="1"
+                        android:layout_height="wrap_content"
+                        android:text="Student"
+                        android:textAppearance="?android:attr/textAppearanceMedium"
+                        android:textStyle="normal"
+                        android:textColor="@color/md_grey_800" />
+
+                    <RadioButton
+                        android:id="@+id/radioBtnStuff"
+                        android:layout_width="0dp"
+                        android:layout_weight="1"
+                        android:layout_height="wrap_content"
+                        android:text="Stuff"
+                        android:textAppearance="?android:attr/textAppearanceMedium"
+                        android:textStyle="normal"
+                        android:textColor="@color/md_grey_800" />
+
+                </RadioGroup>
+
                 <EditText
                     android:id="@+id/registerDesignationET"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
+                    android:visibility="gone"
                     android:hint="Teacher"
                     android:singleLine="true"
                     android:maxLines="1"
