@@ -19,4 +19,13 @@ public class Constants {
 
     public static final String ADMIN_EMAIL = "admin@gmail.com";
 
+    // activity intent
+    public static final String INTENT_KEY_TAG = "key_tag";
+    public static final String INTENT_NAME_TAG = "name_tag";
+    public static final String INTENT_DESIGNATION_TAG = "designation_tag";
+    public static final String INTENT_GENDER_TAG = "gender_tag";
+    public static final String INTENT_PHONE_TAG = "phone_tag";
+    public static final String INTENT_EMAIL_TAG = "email_tag";
+    public static final String INTENT_PASSWORD_TAG = "password_tag";
+
 }

@@ -122,7 +122,6 @@
                                 android:layout_width="0dp"
                                 android:layout_weight="1"
                                 android:layout_height="wrap_content"
-                                android:checked="true"
                                 android:text="Teacher"
                                 android:textAppearance="?android:attr/textAppearanceMedium"
                                 android:textStyle="normal"

@@ -212,7 +212,7 @@ public class MainActivity extends AppCompatActivity {
             logout();
             return true;
         } else if (id == R.id.action_profile) {
-            getUserData();
+            startActivity(new Intent(this, ProfileActivity.class));
             return true;
         }
 

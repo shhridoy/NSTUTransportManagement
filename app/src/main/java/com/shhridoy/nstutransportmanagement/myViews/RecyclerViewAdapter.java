@@ -283,16 +283,12 @@ public class RecyclerViewAdapter extends RecyclerView.Adapter<RecyclerViewAdapte
 
         if (Key != null && BusTitle != null && BusType != null && StartTime != null && StartPoint != null && EndPoint != null) {
             busTitleET.setText(BusTitle);
-            switch (BusType) {
-                case "Student":
-                    studentRb.setSelected(true);
-                    break;
-                case "Teacher":
-                    teacherRb.setSelected(true);
-                    break;
-                case "Stuff":
-                    stuffRb.setSelected(true);
-                    break;
+            if (BusType.contains("Student")) {
+                radioGroup.check(R.id.radioBtnStudent);
+            } else if (BusType.contains("Teacher")) {
+                radioGroup.check(R.id.radioBtnTeacher);
+            } else {
+                radioGroup.check(R.id.radioBtnStuff);
             }
             timeET.setText(StartTime);
             if (StartPoint.contains("Others")) {
