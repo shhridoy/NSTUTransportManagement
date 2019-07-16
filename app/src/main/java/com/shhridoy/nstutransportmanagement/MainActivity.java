@@ -49,8 +49,10 @@ import com.shhridoy.nstutransportmanagement.myObjects.BusSchedule;
 import com.shhridoy.nstutransportmanagement.myUtilities.AppPreferences;
 import com.shhridoy.nstutransportmanagement.myViews.RecyclerViewAdapter;
 
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
+import java.util.Date;
 import java.util.List;
 
 import uk.co.chrisjenx.calligraphy.CalligraphyContextWrapper;
@@ -144,17 +146,13 @@ public class MainActivity extends AppCompatActivity {
 
     private void selectToCampus(boolean b) {
         if (b) {
-            toCampusBtn.setBackgroundColor(getResources().getColor(R.color.colorPrimary));
-            toCampusBtn.setTextColor(Color.WHITE);
-            fromCampusBtn.setBackgroundColor(getResources().getColor(R.color.md_grey_200));
-            fromCampusBtn.setTextColor(Color.DKGRAY);
+            toCampusBtn.setBackgroundResource(R.drawable.bus_schedule_selected_btn_bg);
+            fromCampusBtn.setBackgroundResource(R.drawable.bus_schedule_unselected_btn_bg);
             isToCampusSelected = true;
             isFromCampusSelected = false;
         } else {
-            toCampusBtn.setBackgroundColor(getResources().getColor(R.color.md_grey_200));
-            toCampusBtn.setTextColor(Color.DKGRAY);
-            fromCampusBtn.setBackgroundColor(getResources().getColor(R.color.colorPrimary));
-            fromCampusBtn.setTextColor(Color.WHITE);
+            toCampusBtn.setBackgroundResource(R.drawable.bus_schedule_unselected_btn_bg);
+            fromCampusBtn.setBackgroundResource(R.drawable.bus_schedule_selected_btn_bg);
             isToCampusSelected = false;
             isFromCampusSelected = true;
 
@@ -458,7 +456,18 @@ public class MainActivity extends AppCompatActivity {
                 mTimePicker = new TimePickerDialog(MainActivity.this, new TimePickerDialog.OnTimeSetListener() {
                     @Override
                     public void onTimeSet(TimePicker timePicker, int selectedHour, int selectedMinute) {
-                        timeET.setText(selectedHour + ":" + selectedMinute);
+                        //timeET.setText(selectedHour + ":" + selectedMinute);
+                        String time = selectedHour+":"+selectedMinute;
+                        try {
+                            //String _24HourTime = "22:15";
+                            SimpleDateFormat _24HourSDF = new SimpleDateFormat("HH:mm");
+                            SimpleDateFormat _12HourSDF = new SimpleDateFormat("hh:mm a");
+                            Date _24HourDt = _24HourSDF.parse(time);
+                            //System.out.println(_24HourDt);
+                            timeET.setText(_12HourSDF.format(_24HourDt));
+                        } catch (Exception e) {
+                            e.printStackTrace();
+                        }
                     }
                 }, hour, minute, false);//No 24 hour time
                 mTimePicker.setTitle("Select Time");

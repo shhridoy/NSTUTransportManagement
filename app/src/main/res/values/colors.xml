@@ -6,6 +6,8 @@
 
     <color name="colorPrimaryLight">#29CEFE</color>
 
+    <color name="colorMainBg">#bbdefb</color>
+
     <!--grey-->
     <color name="md_grey_50">#FAFAFA</color>
     <color name="md_grey_100">#F5F5F5</color>

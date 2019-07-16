@@ -1,14 +1,21 @@
 <?xml version="1.0" encoding="utf-8"?>
-<RelativeLayout
-    xmlns:android="http://schemas.android.com/apk/res/android"
+<android.support.v7.widget.CardView xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
-    android:layout_height="wrap_content">
+    android:layout_height="wrap_content"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    app:cardBackgroundColor="@color/md_grey_200"
+    app:cardCornerRadius="10dp"
+    app:cardElevation="5dp"
+    android:layout_marginTop="4dp"
+    android:layout_marginBottom="3dp"
+    android:layout_marginLeft="5dp"
+    android:layout_marginStart="5dp"
+    android:layout_marginEnd="5dp"
+    android:layout_marginRight="5dp">
 
     <RelativeLayout
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_margin="5dp"
-        android:background="@color/colorPrimary">
+        android:layout_height="wrap_content">
 
         <LinearLayout
             android:id="@+id/LL"
@@ -21,20 +28,22 @@
             android:gravity="center_vertical">
 
             <ImageButton
+                android:visibility="visible"
                 android:id="@+id/editBtn"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:src="@android:drawable/ic_menu_edit"
+                android:src="@drawable/ic_action_edit"
                 android:background="@android:color/transparent"
                 android:layout_marginEnd="5dp"
                 android:layout_marginRight="5dp"
                 android:padding="8dp"/>
 
             <ImageButton
+                android:visibility="visible"
                 android:id="@+id/deleteBtn"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:src="@android:drawable/ic_delete"
+                android:src="@drawable/ic_action_delete"
                 android:background="@android:color/transparent"
                 android:layout_marginEnd="5dp"
                 android:layout_marginRight="5dp"
@@ -45,7 +54,7 @@
                 android:id="@+id/voteBtn"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:src="@drawable/ic_action_vote"
+                android:src="@drawable/ic_icon_vote"
                 android:background="@android:color/transparent"
                 android:layout_marginEnd="5dp"
                 android:layout_marginRight="5dp"
@@ -53,7 +62,197 @@
 
         </LinearLayout>
 
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:layout_alignParentStart="true"
+            android:layout_alignParentLeft="true"
+            android:layout_toStartOf="@id/LL"
+            android:layout_toLeftOf="@id/LL"
+            android:gravity="center_vertical"
+            android:padding="5dp"
+            android:background="@android:color/white">
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal"
+                android:gravity="center_vertical">
+
+                <ImageView
+                    android:id="@+id/busIconIMG"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:src="@drawable/ic_icon_blue_bus"
+                    android:background="@android:color/transparent"/>
+
+                <TextView
+                    android:id="@+id/busTitleTV"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:text="White Bus"
+                    android:textAppearance="?android:attr/textAppearanceMedium"
+                    android:textColor="@color/md_grey_700"
+                    android:textStyle="bold"
+                    android:maxLines="2"
+                    android:ellipsize="end"
+                    android:paddingStart="5dp"
+                    android:paddingLeft="5dp"
+                    android:paddingEnd="1dp"
+                    android:paddingRight="1dp"/>
+
+            </LinearLayout>
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal"
+                android:gravity="center_vertical">
+
+                <ImageView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:src="@drawable/ic_icon_person"
+                    android:background="@android:color/transparent"/>
+
+                <TextView
+                    android:id="@+id/busTypeTV"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:text="Teacher"
+                    android:textAppearance="?android:attr/textAppearanceMedium"
+                    android:textColor="@color/md_grey_700"
+                    android:textStyle="bold"
+                    android:maxLines="2"
+                    android:ellipsize="end"
+                    android:paddingStart="5dp"
+                    android:paddingLeft="5dp"
+                    android:paddingEnd="1dp"
+                    android:paddingRight="1dp"/>
+
+            </LinearLayout>
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal"
+                android:gravity="center_vertical">
+
+                <ImageView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:src="@drawable/ic_icon_start"
+                    android:background="@android:color/transparent"/>
+
+                <TextView
+                    android:id="@+id/startPointTV"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:text="Maijdee Bazaar"
+                    android:textAppearance="?android:attr/textAppearanceMedium"
+                    android:textColor="@color/md_grey_700"
+                    android:textStyle="bold"
+                    android:maxLines="2"
+                    android:ellipsize="end"
+                    android:paddingStart="5dp"
+                    android:paddingLeft="5dp"
+                    android:paddingEnd="1dp"
+                    android:paddingRight="1dp"/>
+
+            </LinearLayout>
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal"
+                android:gravity="center_vertical">
+
+                <ImageView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:src="@drawable/ic_icon_stop"
+                    android:background="@android:color/transparent"/>
+
+                <TextView
+                    android:id="@+id/endPointTV"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:text="University Campus"
+                    android:textAppearance="?android:attr/textAppearanceMedium"
+                    android:textColor="@color/md_grey_700"
+                    android:textStyle="bold"
+                    android:maxLines="2"
+                    android:ellipsize="end"
+                    android:paddingStart="5dp"
+                    android:paddingLeft="5dp"
+                    android:paddingEnd="1dp"
+                    android:paddingRight="1dp"/>
+
+            </LinearLayout>
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal"
+                android:gravity="center_vertical">
+
+                <ImageView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:src="@drawable/ic_icon_time"
+                    android:background="@android:color/transparent"/>
+
+                <TextView
+                    android:id="@+id/timeTV"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:text="8:30 AM"
+                    android:textAppearance="?android:attr/textAppearanceMedium"
+                    android:textColor="@color/md_grey_700"
+                    android:textStyle="bold"
+                    android:maxLines="2"
+                    android:ellipsize="end"
+                    android:paddingStart="5dp"
+                    android:paddingLeft="5dp"
+                    android:paddingEnd="1dp"
+                    android:paddingRight="1dp"/>
+
+            </LinearLayout>
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal"
+                android:gravity="center_vertical">
+
+                <ImageView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:src="@drawable/ic_icon_going"
+                    android:background="@android:color/transparent"/>
+
+                <TextView
+                    android:id="@+id/voteTV"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:text="50"
+                    android:textAppearance="?android:attr/textAppearanceMedium"
+                    android:textColor="@color/md_grey_700"
+                    android:textStyle="bold"
+                    android:maxLines="2"
+                    android:ellipsize="end"
+                    android:paddingStart="5dp"
+                    android:paddingLeft="5dp"
+                    android:paddingEnd="1dp"
+                    android:paddingRight="1dp"/>
+
+            </LinearLayout>
+
+        </LinearLayout>
+
         <TextView
+            android:visibility="gone"
             android:id="@+id/textView"
             android:layout_alignParentStart="true"
             android:layout_alignParentLeft="true"
@@ -64,11 +263,11 @@
             android:minHeight="100dp"
             android:textAppearance="?android:attr/textAppearanceMedium"
             android:text="@string/app_name"
-            android:textColor="@android:color/white"
+            android:textColor="@color/md_grey_700"
             android:textStyle="bold"
             android:gravity="center_vertical"
             android:padding="5dp"/>
 
     </RelativeLayout>
 
-</RelativeLayout>
+</android.support.v7.widget.CardView>

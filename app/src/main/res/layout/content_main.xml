@@ -15,7 +15,13 @@
         android:layout_height="wrap_content"
         android:orientation="horizontal"
         android:layout_alignParentTop="true"
-        android:weightSum="2">
+        android:weightSum="2"
+        android:layout_marginTop="5dp"
+        android:layout_marginBottom="0dp"
+        android:layout_marginStart="8dp"
+        android:layout_marginLeft="8dp"
+        android:layout_marginEnd="8dp"
+        android:layout_marginRight="8dp">
 
         <Button
             android:id="@+id/toCampusBtn"
@@ -28,7 +34,9 @@
             android:textAppearance="?android:attr/textAppearanceMedium"
             android:textAlignment="center"
             android:textAllCaps="true"
-            android:background="@color/colorPrimary"/>
+            android:background="@drawable/bus_schedule_selected_btn_bg"
+            android:layout_marginEnd="3dp"
+            android:layout_marginRight="3dp"/>
 
         <Button
             android:id="@+id/fromCampusBtn"
@@ -36,21 +44,45 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:text="From Campus"
-            android:textColor="@android:color/darker_gray"
+            android:textColor="@android:color/white"
             android:textStyle="bold"
             android:textAppearance="?android:attr/textAppearanceMedium"
             android:textAlignment="center"
             android:textAllCaps="true"
-            android:background="@color/md_grey_200"/>
+            android:background="@drawable/bus_schedule_unselected_btn_bg"
+            android:layout_marginLeft="3dp"
+            android:layout_marginStart="3dp"/>
 
     </LinearLayout>
 
-    <android.support.v7.widget.RecyclerView
+    <RelativeLayout
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:id="@+id/recyclerView"
-        android:layout_below="@id/topLL">
+        android:layout_height="match_parent"
+        android:layout_below="@id/topLL"
+        android:paddingTop="2dp"
+        android:paddingBottom="0dp"
+        android:paddingLeft="2dp"
+        android:paddingStart="2dp"
+        android:paddingEnd="2dp"
+        android:paddingRight="2dp"
+        android:background="@drawable/bus_schedule_selected_btn_bg">
 
-    </android.support.v7.widget.RecyclerView>
+        <android.support.v7.widget.CardView
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            app:cardBackgroundColor="@color/colorMainBg"
+            app:cardElevation="0dp"
+            app:cardCornerRadius="6dp">
+
+            <android.support.v7.widget.RecyclerView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:id="@+id/recyclerView">
+
+            </android.support.v7.widget.RecyclerView>
+
+        </android.support.v7.widget.CardView>
+
+    </RelativeLayout>
 
 </RelativeLayout>

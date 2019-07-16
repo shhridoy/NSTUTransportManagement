@@ -20,6 +20,7 @@ import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageButton;
+import android.widget.ImageView;
 import android.widget.PopupWindow;
 import android.widget.RadioButton;
 import android.widget.RadioGroup;
@@ -35,8 +36,10 @@ import com.google.firebase.database.DatabaseReference;
 import com.shhridoy.nstutransportmanagement.R;
 import com.shhridoy.nstutransportmanagement.myObjects.BusSchedule;
 
+import java.text.SimpleDateFormat;
 import java.util.Arrays;
 import java.util.Calendar;
+import java.util.Date;
 import java.util.List;
 
 import static com.shhridoy.nstutransportmanagement.myUtilities.Constants.ADMIN_TAG;
@@ -117,7 +120,22 @@ public class RecyclerViewAdapter extends RecyclerView.Adapter<RecyclerViewAdapte
         final String endPoint = busScheduleList.get(position).getEnd_point();
         final String going = busScheduleList.get(position).getVote();
 
-        holder.textView.setText(busTitle+"\n"+busType+"\n"+startTime+"\n"+startPoint+"\n"+endPoint+"\n"+going);
+        //holder.textView.setText(busTitle+"\n"+busType+"\n"+startTime+"\n"+startPoint+"\n"+endPoint+"\n"+going);
+
+        holder.busTitleTV.setText(busTitle);
+        holder.busTypeTV.setText(busType);
+        holder.startPointTV.setText(startPoint);
+        holder.endPointTV.setText(endPoint);
+        holder.timeTV.setText(startTime);
+        holder.voteTV.setText(going);
+
+        if (busTitle.contains("red") || busTitle.contains("Red")) {
+            holder.busIconIMG.setImageResource(R.drawable.ic_icon_red_bus);
+        } else if (busTitle.contains("white") || busTitle.contains("White")) {
+            holder.busIconIMG.setImageResource(R.drawable.ic_icon_blue_bus);
+        } else if (busTitle.contains("mini") || busTitle.contains("Mini") || busTitle.contains("micro") || busTitle.contains("Micro")) {
+            holder.busIconIMG.setImageResource(R.drawable.ic_icon_yellow_bus);
+        }
 
         holder.textView.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -198,6 +216,8 @@ public class RecyclerViewAdapter extends RecyclerView.Adapter<RecyclerViewAdapte
     class ViewHolder extends RecyclerView.ViewHolder {//implements View.OnClickListener {
 
         TextView textView;
+        ImageView busIconIMG;
+        TextView busTitleTV, busTypeTV, startPointTV, endPointTV, timeTV, voteTV;
         ImageButton deleteBtn, editBtn, voteBtn;
 
         ViewHolder(View itemView) {
@@ -206,6 +226,13 @@ public class RecyclerViewAdapter extends RecyclerView.Adapter<RecyclerViewAdapte
             deleteBtn = itemView.findViewById(R.id.deleteBtn);
             editBtn = itemView.findViewById(R.id.editBtn);
             voteBtn = itemView.findViewById(R.id.voteBtn);
+            busTitleTV = itemView.findViewById(R.id.busTitleTV);
+            busTypeTV = itemView.findViewById(R.id.busTypeTV);
+            startPointTV = itemView.findViewById(R.id.startPointTV);
+            endPointTV = itemView.findViewById(R.id.endPointTV);
+            timeTV = itemView.findViewById(R.id.timeTV);
+            voteTV = itemView.findViewById(R.id.voteTV);
+            busIconIMG = itemView.findViewById(R.id.busIconIMG);
             //itemView.setOnClickListener(this);
         }
 
@@ -362,7 +389,18 @@ public class RecyclerViewAdapter extends RecyclerView.Adapter<RecyclerViewAdapte
                 mTimePicker = new TimePickerDialog(context, new TimePickerDialog.OnTimeSetListener() {
                     @Override
                     public void onTimeSet(TimePicker timePicker, int selectedHour, int selectedMinute) {
-                        timeET.setText(selectedHour + ":" + selectedMinute);
+                        //timeET.setText(selectedHour + ":" + selectedMinute);
+                        String time = selectedHour+":"+selectedMinute;
+                        try {
+                            //String _24HourTime = "22:15";
+                            SimpleDateFormat _24HourSDF = new SimpleDateFormat("HH:mm");
+                            SimpleDateFormat _12HourSDF = new SimpleDateFormat("hh:mm a");
+                            Date _24HourDt = _24HourSDF.parse(time);
+                            //System.out.println(_24HourDt);
+                            timeET.setText(_12HourSDF.format(_24HourDt));
+                        } catch (Exception e) {
+                            e.printStackTrace();
+                        }
                     }
                 }, hour, minute, false);//No 24 hour time
                 mTimePicker.setTitle("Select Time");
