@@ -5,7 +5,6 @@ import android.app.ProgressDialog;
 import android.app.TimePickerDialog;
 import android.content.Context;
 import android.content.Intent;
-import android.graphics.Color;
 import android.net.ConnectivityManager;
 import android.os.Bundle;
 import android.os.Handler;
@@ -224,12 +223,15 @@ public class MainActivity extends AppCompatActivity {
 
     }
 
-    private void getBusScheduleList() {
+    private void getBusScheduleList(final ProgressDialog progressDialog) {
         databaseReference.child("BusSchedules").addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
 
                 busSchedules.clear();
+                if (progressDialog != null && progressDialog.isShowing()) {
+                    progressDialog.dismiss();
+                }
 
                 for(DataSnapshot ds : dataSnapshot.getChildren()) {
                     String key = ds.child("key").getValue().toString();
@@ -260,12 +262,20 @@ public class MainActivity extends AppCompatActivity {
 
             @Override
             public void onCancelled(@NonNull DatabaseError databaseError) {
-
+                if (progressDialog != null && progressDialog.isShowing()) {
+                    progressDialog.dismiss();
+                }
             }
         });
     }
 
     private void getUserDesignationData() {
+
+        final ProgressDialog progressDialog = new ProgressDialog(MainActivity.this);
+        progressDialog.setMessage("Getting Schedules....");
+        progressDialog.setCancelable(false);
+        progressDialog.show();
+
         databaseReference.child("Users").child(firebaseAuth.getUid()).addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
@@ -276,21 +286,25 @@ public class MainActivity extends AppCompatActivity {
                 //String mobile = dataSnapshot.child("mobile").getValue().toString();
                 String designation = dataSnapshot.child("designation").getValue().toString();
                 Designation = designation;
-                getBusScheduleList();
+                getBusScheduleList(progressDialog);
                 //detailTV.setText("Name: "+name+"\nDesignation: "+designation+"\nPhone: "+phone+"\nE-mail: "+email+"\nPassword: "+pass);
                 //Toast.makeText(getApplicationContext(), name+"\n"+gender+"\n"+designation+"\n"+mobile+"\n"+email+"\n"+pass, Toast.LENGTH_LONG).show();
             }
 
             @Override
             public void onCancelled(@NonNull DatabaseError databaseError) {
-
+                progressDialog.dismiss();
             }
         });
     }
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
-        getMenuInflater().inflate(R.menu.menu_main, menu);
+        if (isAdmin) {
+            getMenuInflater().inflate(R.menu.menu_admin, menu);
+        } else {
+            getMenuInflater().inflate(R.menu.menu_user, menu);
+        }
         return true;
     }
 
@@ -304,6 +318,9 @@ public class MainActivity extends AppCompatActivity {
             return true;
         } else if (id == R.id.action_profile) {
             startActivity(new Intent(this, ProfileActivity.class));
+            return true;
+        } else if (id == R.id.action_users) {
+            startActivity(new Intent(this, UsersActivity.class));
             return true;
         }
 

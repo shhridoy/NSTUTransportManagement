@@ -8,6 +8,8 @@ import android.os.Handler;
 import android.support.annotation.NonNull;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.view.View;
+import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -25,6 +27,8 @@ public class SplashScreenActivity extends AppCompatActivity {
 
     private boolean isInitialInternetOn = false;
 
+    private ProgressBar progressBar;
+
     FirebaseAuth firebaseAuth;
 
     @Override
@@ -33,6 +37,8 @@ public class SplashScreenActivity extends AppCompatActivity {
         setContentView(R.layout.activity_splash_screen);
 
         firebaseAuth = FirebaseAuth.getInstance();
+        progressBar = findViewById(R.id.progressBar);
+        progressBar.setVisibility(View.GONE);
 
         isInitialInternetOn = isInternetOn();
 
@@ -65,6 +71,7 @@ public class SplashScreenActivity extends AppCompatActivity {
     private void userAuthCheckAndGoToActivity() {
 
         if (isUserLoggedIn()) {
+            progressBar.setVisibility(View.VISIBLE);
             if (isInternetOn()) {
                 userLogin();
             } else {

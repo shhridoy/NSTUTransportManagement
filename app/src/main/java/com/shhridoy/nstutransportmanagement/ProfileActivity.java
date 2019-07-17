@@ -62,6 +62,7 @@ public class ProfileActivity extends AppCompatActivity {
     }
 
     private void init() {
+        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         initializeViews();
         disableViews(true);
         firebaseAuth = FirebaseAuth.getInstance();
@@ -190,9 +191,14 @@ public class ProfileActivity extends AppCompatActivity {
     }
 
     private void getCurrentUserData() {
+        final ProgressDialog progressDialog = new ProgressDialog(this);
+        progressDialog.setMessage("Getting user data....");
+        progressDialog.setCancelable(false);
+        progressDialog.show();
         databaseReference.child("Users").child(firebaseAuth.getUid()).addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                progressDialog.dismiss();
                 String name = dataSnapshot.child("name").getValue().toString();
                 String pass = dataSnapshot.child("password").getValue().toString();
                 String gender = dataSnapshot.child("gender").getValue().toString();
@@ -204,7 +210,7 @@ public class ProfileActivity extends AppCompatActivity {
 
             @Override
             public void onCancelled(@NonNull DatabaseError databaseError) {
-
+                progressDialog.dismiss();
             }
         });
     }
@@ -272,7 +278,7 @@ public class ProfileActivity extends AppCompatActivity {
             progressDialog.setCancelable(false);
             progressDialog.show();
 
-            final Profile profile = new Profile(name, designation, gender, mobile, email, password1);
+            final Profile profile = new Profile(name, designation, gender, mobile, email, password1, firebaseUser.getUid());
 
             if (AppPreferences.getPreferencePassword(this).equals(password1)) {
                 dbRef.child(firebaseUser.getUid()).setValue(profile)
@@ -349,6 +355,9 @@ public class ProfileActivity extends AppCompatActivity {
         //noinspection SimplifiableIfStatement
         if (id == R.id.action_edit) {
             disableViews(false);
+            return true;
+        } else if (id == android.R.id.home) {
+            finish();
             return true;
         }
 

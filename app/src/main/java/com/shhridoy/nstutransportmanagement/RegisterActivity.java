@@ -204,7 +204,7 @@ public class RegisterActivity extends AppCompatActivity {
 
                                 firebaseUser = firebaseAuth.getCurrentUser();
 
-                                final Profile profile = new Profile(name, finalDesig, gender, mobile, email, password1);
+                                final Profile profile = new Profile(name, finalDesig, gender, mobile, email, password1, firebaseUser.getUid());
 
                                 dbRef.child(firebaseUser.getUid()).setValue(profile)
                                         .addOnCompleteListener(new OnCompleteListener<Void>() {

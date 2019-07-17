@@ -5,6 +5,8 @@ import android.app.ProgressDialog;
 import android.app.TimePickerDialog;
 import android.content.Context;
 import android.content.DialogInterface;
+import android.content.Intent;
+import android.graphics.PorterDuff;
 import android.net.ConnectivityManager;
 import android.support.annotation.NonNull;
 import android.support.v7.app.AlertDialog;
@@ -21,6 +23,7 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageButton;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.PopupWindow;
 import android.widget.RadioButton;
 import android.widget.RadioGroup;
@@ -32,25 +35,36 @@ import android.widget.Toast;
 
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
+import com.google.firebase.auth.AuthCredential;
+import com.google.firebase.auth.AuthResult;
+import com.google.firebase.auth.EmailAuthProvider;
+import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.database.DatabaseReference;
+import com.shhridoy.nstutransportmanagement.MainActivity;
 import com.shhridoy.nstutransportmanagement.R;
 import com.shhridoy.nstutransportmanagement.myObjects.BusSchedule;
+import com.shhridoy.nstutransportmanagement.myObjects.Profile;
+import com.shhridoy.nstutransportmanagement.myUtilities.AppPreferences;
 
+import java.security.spec.PSSParameterSpec;
 import java.text.SimpleDateFormat;
 import java.util.Arrays;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
 
+import static android.view.View.GONE;
 import static com.shhridoy.nstutransportmanagement.myUtilities.Constants.ADMIN_TAG;
 import static com.shhridoy.nstutransportmanagement.myUtilities.Constants.SPINNER_ITEM_LIST_1;
 import static com.shhridoy.nstutransportmanagement.myUtilities.Constants.SPINNER_ITEM_LIST_2;
 import static com.shhridoy.nstutransportmanagement.myUtilities.Constants.SPINNER_ITEM_LIST_3;
-import static com.shhridoy.nstutransportmanagement.myUtilities.Constants.USER_TAG;
+import static com.shhridoy.nstutransportmanagement.myUtilities.Constants.USERS_LIST_TAG;
 
 public class RecyclerViewAdapter extends RecyclerView.Adapter<RecyclerViewAdapter.ViewHolder> {
 
     private List<BusSchedule> busScheduleList = null;
+    private List<Profile> profileList = null;
     private Context context;
     private DatabaseReference databaseReference;
     private String tag = null;
@@ -69,15 +83,16 @@ public class RecyclerViewAdapter extends RecyclerView.Adapter<RecyclerViewAdapte
     private RadioButton radioButton = null, teacherRb = null, studentRb = null, stuffRb = null;
     private Button saveBtn = null;
 
-    public RecyclerViewAdapter(Context context, List<BusSchedule> busScheduleList,  String tag) {
-        this.context = context;
-        this.busScheduleList = busScheduleList;
-        this.tag = tag;
-    }
-
     public RecyclerViewAdapter(Context context, List<BusSchedule> busScheduleList, DatabaseReference databaseReference, String tag) {
         this.context = context;
         this.busScheduleList = busScheduleList;
+        this.databaseReference = databaseReference;
+        this.tag = tag;
+    }
+
+    public RecyclerViewAdapter(Context context, List<Profile> profileList, String tag, DatabaseReference databaseReference) {
+        this.context = context;
+        this.profileList = profileList;
         this.databaseReference = databaseReference;
         this.tag = tag;
     }
@@ -102,115 +117,219 @@ public class RecyclerViewAdapter extends RecyclerView.Adapter<RecyclerViewAdapte
         previousPosition = position;
         AnimationUtils.setFadeAnimation(holder.itemView);*/
 
-        if (tag.equalsIgnoreCase(ADMIN_TAG)) {
-            holder.editBtn.setVisibility(View.VISIBLE);
-            holder.deleteBtn.setVisibility(View.VISIBLE);
+        if (tag.equalsIgnoreCase(USERS_LIST_TAG)) {
+
             holder.voteBtn.setVisibility(View.GONE);
-        } else {
             holder.editBtn.setVisibility(View.GONE);
-            holder.deleteBtn.setVisibility(View.GONE);
-            holder.voteBtn.setVisibility(View.VISIBLE);
-        }
+            holder.scheduleLL.setVisibility(View.GONE);
+            holder.goingLL.setVisibility(View.GONE);
+            holder.deleteBtn.setVisibility(View.VISIBLE);
+            holder.textView.setVisibility(View.VISIBLE);
 
-        final String key = busScheduleList.get(position).getKey();
-        final String busTitle = busScheduleList.get(position).getBus_title();
-        final String busType = busScheduleList.get(position).getBus_type();
-        final String startTime = busScheduleList.get(position).getStart_time();
-        final String startPoint = busScheduleList.get(position).getStart_point();
-        final String endPoint = busScheduleList.get(position).getEnd_point();
-        final String going = busScheduleList.get(position).getVote();
+            String name = profileList.get(position).getName();
+            String designation = profileList.get(position).getDesignation();
+            String gender = profileList.get(position).getGender();
+            String mobile = profileList.get(position).getMobile();
+            final String email = profileList.get(position).getEmail();
+            final String password = profileList.get(position).getPassword();
+            final String userId = profileList.get(position).getUser_id();
 
-        //holder.textView.setText(busTitle+"\n"+busType+"\n"+startTime+"\n"+startPoint+"\n"+endPoint+"\n"+going);
+            holder.textView.setText("Name: "+name+"\nDesignation: "+designation+"\nGender: "+gender+"\nMobile: "+mobile+"\nEmail: "+email+"\nUser ID: "+userId);
 
-        holder.busTitleTV.setText(busTitle);
-        holder.busTypeTV.setText(busType);
-        holder.startPointTV.setText(startPoint);
-        holder.endPointTV.setText(endPoint);
-        holder.timeTV.setText(startTime);
-        holder.voteTV.setText(going);
+            holder.deleteBtn.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
 
-        if (busTitle.contains("red") || busTitle.contains("Red")) {
-            holder.busIconIMG.setImageResource(R.drawable.ic_icon_red_bus);
-        } else if (busTitle.contains("white") || busTitle.contains("White")) {
-            holder.busIconIMG.setImageResource(R.drawable.ic_icon_blue_bus);
-        } else if (busTitle.contains("mini") || busTitle.contains("Mini") || busTitle.contains("micro") || busTitle.contains("Micro")) {
-            holder.busIconIMG.setImageResource(R.drawable.ic_icon_yellow_bus);
-        }
+                    final AlertDialog.Builder builder=new AlertDialog.Builder(context);
+                    // builder.setCancelable(false);
+                    builder.setTitle(Html.fromHtml("<font color='#D81B60'>Warning!!</font>"));
+                    builder.setMessage(Html.fromHtml("<font color='#000000'>Do you want to delete this user?</font>"));
+                    builder.setNegativeButton(Html.fromHtml("No"),new DialogInterface.OnClickListener() {
 
-        holder.textView.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                Toast.makeText(context, busTitle+": "+going+" will be going.", Toast.LENGTH_LONG).show();
+                        @Override
+                        public void onClick(DialogInterface dialog, int which) {
+                            dialog.cancel();
+                        }
+                    });
+                    builder.setPositiveButton(Html.fromHtml("Yes"),new DialogInterface.OnClickListener() {
+
+                        @Override
+                        public void onClick(DialogInterface dialog, int which) {
+                            deleteUser(userId, email, password);
+                        }
+                    });
+
+                    AlertDialog alert = builder.create();
+                    alert.show();
+
+                }
+            });
+
+        } else {
+
+            if (tag.equalsIgnoreCase(ADMIN_TAG)) {
+                holder.editBtn.setVisibility(View.VISIBLE);
+                holder.deleteBtn.setVisibility(View.VISIBLE);
+                holder.voteBtn.setVisibility(GONE);
+            } else {
+                holder.editBtn.setVisibility(GONE);
+                holder.deleteBtn.setVisibility(GONE);
+                holder.voteBtn.setVisibility(View.VISIBLE);
             }
-        });
 
-        holder.deleteBtn.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                AlertDialog.Builder builder=new AlertDialog.Builder(context);
-                // builder.setCancelable(false);
-                builder.setTitle(Html.fromHtml("<font color='#D81B60'>Warning!!</font>"));
-                builder.setMessage(Html.fromHtml("<font color='#000000'>Do you want to delete this bus schedule?</font>"));
-                builder.setNegativeButton(Html.fromHtml("No"),new DialogInterface.OnClickListener() {
+            final String key = busScheduleList.get(position).getKey();
+            final String busTitle = busScheduleList.get(position).getBus_title();
+            final String busType = busScheduleList.get(position).getBus_type();
+            final String startTime = busScheduleList.get(position).getStart_time();
+            final String startPoint = busScheduleList.get(position).getStart_point();
+            final String endPoint = busScheduleList.get(position).getEnd_point();
+            final String going = busScheduleList.get(position).getVote();
 
-                    @Override
-                    public void onClick(DialogInterface dialog, int which) {
-                        dialog.cancel();
-                    }
-                });
-                builder.setPositiveButton(Html.fromHtml("Yes"),new DialogInterface.OnClickListener() {
+            holder.busTitleTV.setText(busTitle);
+            holder.busTypeTV.setText(busType);
+            holder.startPointTV.setText(startPoint);
+            holder.endPointTV.setText(endPoint);
+            holder.timeTV.setText(startTime);
+            holder.voteTV.setText(going);
 
-                    @Override
-                    public void onClick(DialogInterface dialog, int which) {
-                        deleteSchedule(busScheduleList.get(position).getKey());
-                    }
-                });
-
-                AlertDialog alert = builder.create();
-                alert.show();
+            if (endPoint.contains("University") || endPoint.contains("university") || endPoint.contains("campus") || endPoint.contains("Campus")) {
+                if (AppPreferences.getPreferenceVotedKeyToCampus(context).equalsIgnoreCase(key)) {
+                    holder.voteBtn.setColorFilter(context.getResources().getColor(R.color.colorPrimary), PorterDuff.Mode.SRC_ATOP);
+                } else {
+                    holder.voteBtn.setColorFilter(context.getResources().getColor(R.color.md_grey_600), PorterDuff.Mode.SRC_ATOP);
+                }
+            } else if (!endPoint.contains("University") || !endPoint.contains("university") || !endPoint.contains("campus") || !endPoint.contains("Campus")) {
+                if (AppPreferences.getPreferenceVotedKeyFromCampus(context).equalsIgnoreCase(key)) {
+                    holder.voteBtn.setColorFilter(context.getResources().getColor(R.color.colorPrimary), PorterDuff.Mode.SRC_ATOP);
+                } else {
+                    holder.voteBtn.setColorFilter(context.getResources().getColor(R.color.md_grey_600), PorterDuff.Mode.SRC_ATOP);
+                }
             }
-        });
 
-        holder.editBtn.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                busScheduleEditPopupWindow(
-                        key, busTitle, busType, startTime, startPoint, endPoint, going
-                );
+            if (busTitle.contains("red") || busTitle.contains("Red")) {
+                holder.busIconIMG.setImageResource(R.drawable.ic_icon_red_bus);
+            } else if (busTitle.contains("white") || busTitle.contains("White")) {
+                holder.busIconIMG.setImageResource(R.drawable.ic_icon_blue_bus);
+            } else if (busTitle.contains("mini") || busTitle.contains("Mini") || busTitle.contains("micro") || busTitle.contains("Micro")) {
+                holder.busIconIMG.setImageResource(R.drawable.ic_icon_yellow_bus);
             }
-        });
+
+            holder.deleteBtn.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+                    AlertDialog.Builder builder=new AlertDialog.Builder(context);
+                    // builder.setCancelable(false);
+                    builder.setTitle(Html.fromHtml("<font color='#D81B60'>Warning!!</font>"));
+                    builder.setMessage(Html.fromHtml("<font color='#000000'>Do you want to delete this bus schedule?</font>"));
+                    builder.setNegativeButton(Html.fromHtml("No"),new DialogInterface.OnClickListener() {
+
+                        @Override
+                        public void onClick(DialogInterface dialog, int which) {
+                            dialog.cancel();
+                        }
+                    });
+                    builder.setPositiveButton(Html.fromHtml("Yes"),new DialogInterface.OnClickListener() {
+
+                        @Override
+                        public void onClick(DialogInterface dialog, int which) {
+                            deleteSchedule(busScheduleList.get(position).getKey());
+                        }
+                    });
+
+                    AlertDialog alert = builder.create();
+                    alert.show();
+                }
+            });
+
+            holder.editBtn.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+                    busScheduleEditPopupWindow(
+                            key, busTitle, busType, startTime, startPoint, endPoint, going
+                    );
+                }
+            });
 
 
-        holder.voteBtn.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                String vote = String.valueOf(Integer.parseInt(going)+1);
-                databaseReference.child("BusSchedules").child(key).child("vote").setValue(vote)
-                        .addOnCompleteListener(new OnCompleteListener<Void>() {
-                    @Override
-                    public void onComplete(@NonNull Task<Void> task) {
-                        if (task.isSuccessful()) {
-                            Toast.makeText(context, "Voted!", Toast.LENGTH_SHORT).show();
-                        } else {
-                            Toast.makeText(context, "Voting failed!!", Toast.LENGTH_SHORT).show();
+            holder.voteBtn.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+                    if (endPoint.contains("University") || endPoint.contains("university") || endPoint.contains("campus") || endPoint.contains("Campus")) {
+                        if (isInternetOn() && AppPreferences.getPreferenceVotedKeyToCampus(context).equalsIgnoreCase(AppPreferences.DEFAULT)) {
+                            AppPreferences.setPreferenceVotedKeyToCampus(context, key);
+                            String vote = String.valueOf(Integer.parseInt(going)+1);
+                            databaseReference.child("BusSchedules").child(key).child("vote").setValue(vote)
+                                    .addOnCompleteListener(new OnCompleteListener<Void>() {
+                                        @Override
+                                        public void onComplete(@NonNull Task<Void> task) {
+                                            if (task.isSuccessful()) {
+                                                Toast.makeText(context, "Voted!", Toast.LENGTH_SHORT).show();
+                                            } else {
+                                                Toast.makeText(context, "Voting failed!!", Toast.LENGTH_SHORT).show();
+                                            }
+                                        }
+                                    });
+                        } else if (isInternetOn() && AppPreferences.getPreferenceVotedKeyToCampus(context).equalsIgnoreCase(key)) {
+                            AppPreferences.setPreferenceVotedKeyToCampus(context, AppPreferences.DEFAULT);
+                            String vote = String.valueOf(Integer.parseInt(going)-1);
+                            databaseReference.child("BusSchedules").child(key).child("vote").setValue(vote)
+                                    .addOnCompleteListener(new OnCompleteListener<Void>() {
+                                        @Override
+                                        public void onComplete(@NonNull Task<Void> task) {
+                                            if (task.isSuccessful()) {
+                                                Toast.makeText(context, "Vote Canceled!", Toast.LENGTH_SHORT).show();
+                                            } else {
+                                                Toast.makeText(context, "Failed to cancel vote!!", Toast.LENGTH_SHORT).show();
+                                            }
+                                        }
+                                    });
+                        }
+                    } else if (!endPoint.contains("University") || !endPoint.contains("university") || !endPoint.contains("campus") || !endPoint.contains("Campus")) {
+                        if (isInternetOn() && AppPreferences.getPreferenceVotedKeyFromCampus(context).equalsIgnoreCase(AppPreferences.DEFAULT)) {
+                            AppPreferences.setPreferenceVotedKeyFromCampus(context, key);
+                            String vote = String.valueOf(Integer.parseInt(going)+1);
+                            databaseReference.child("BusSchedules").child(key).child("vote").setValue(vote)
+                                    .addOnCompleteListener(new OnCompleteListener<Void>() {
+                                        @Override
+                                        public void onComplete(@NonNull Task<Void> task) {
+                                            if (task.isSuccessful()) {
+                                                Toast.makeText(context, "Voted!", Toast.LENGTH_SHORT).show();
+                                            } else {
+                                                Toast.makeText(context, "Voting failed!!", Toast.LENGTH_SHORT).show();
+                                            }
+                                        }
+                                    });
+                        } else if (isInternetOn() && AppPreferences.getPreferenceVotedKeyFromCampus(context).equalsIgnoreCase(key)) {
+                            AppPreferences.setPreferenceVotedKeyFromCampus(context, AppPreferences.DEFAULT);
+                            String vote = String.valueOf(Integer.parseInt(going)-1);
+                            databaseReference.child("BusSchedules").child(key).child("vote").setValue(vote)
+                                    .addOnCompleteListener(new OnCompleteListener<Void>() {
+                                        @Override
+                                        public void onComplete(@NonNull Task<Void> task) {
+                                            if (task.isSuccessful()) {
+                                                Toast.makeText(context, "Vote Canceled!", Toast.LENGTH_SHORT).show();
+                                            } else {
+                                                Toast.makeText(context, "Failed to cancel vote!!", Toast.LENGTH_SHORT).show();
+                                            }
+                                        }
+                                    });
                         }
                     }
-                });
-            }
-        });
 
+                }
+            });
+
+        }
 
     }
 
     @Override
     public int getItemCount() {
-        return busScheduleList.size();
-    }
-
-    private void removeAt(int position) {
-        busScheduleList.remove(position);
-        notifyItemRemoved(position);
-        notifyItemRangeChanged(position, busScheduleList.size());
+        if (tag.equalsIgnoreCase(USERS_LIST_TAG)) {
+            return profileList.size();
+        } else {
+            return busScheduleList.size();
+        }
     }
 
     class ViewHolder extends RecyclerView.ViewHolder {//implements View.OnClickListener {
@@ -219,6 +338,7 @@ public class RecyclerViewAdapter extends RecyclerView.Adapter<RecyclerViewAdapte
         ImageView busIconIMG;
         TextView busTitleTV, busTypeTV, startPointTV, endPointTV, timeTV, voteTV;
         ImageButton deleteBtn, editBtn, voteBtn;
+        LinearLayout scheduleLL, goingLL;
 
         ViewHolder(View itemView) {
             super(itemView);
@@ -233,6 +353,8 @@ public class RecyclerViewAdapter extends RecyclerView.Adapter<RecyclerViewAdapte
             timeTV = itemView.findViewById(R.id.timeTV);
             voteTV = itemView.findViewById(R.id.voteTV);
             busIconIMG = itemView.findViewById(R.id.busIconIMG);
+            scheduleLL = itemView.findViewById(R.id.scheduleLL);
+            goingLL = itemView.findViewById(R.id.goingLL);
             //itemView.setOnClickListener(this);
         }
 
@@ -243,9 +365,14 @@ public class RecyclerViewAdapter extends RecyclerView.Adapter<RecyclerViewAdapte
     }
 
     private void deleteSchedule(String Key) {
+        final ProgressDialog progressDialog = new ProgressDialog(context);
+        progressDialog.setMessage("Deleting Schedule....");
+        progressDialog.setCancelable(false);
+        progressDialog.show();
         databaseReference.child("BusSchedules").child(Key).removeValue().addOnCompleteListener(new OnCompleteListener<Void>() {
             @Override
             public void onComplete(@NonNull Task<Void> task) {
+                progressDialog.dismiss();
                 if (task.isSuccessful()) {
                     Toast.makeText(context, "Schedule removed.", Toast.LENGTH_SHORT).show();
                 } else {
@@ -253,6 +380,66 @@ public class RecyclerViewAdapter extends RecyclerView.Adapter<RecyclerViewAdapte
                 }
             }
         });
+    }
+
+    private void deleteUser(final String UserID, final String Email, final String Password) {
+        final ProgressDialog progressDialog = new ProgressDialog(context);
+        progressDialog.setMessage("Deleting User....");
+        progressDialog.setCancelable(false);
+        progressDialog.show();
+       final FirebaseAuth firebaseAuth = FirebaseAuth.getInstance();
+                firebaseAuth.signInWithEmailAndPassword(Email, Password)
+                .addOnCompleteListener(new OnCompleteListener<AuthResult>() {
+                    @Override
+                    public void onComplete(@NonNull Task<AuthResult> task) {
+                        if (task.isSuccessful()) {
+                            final FirebaseUser firebaseUser = firebaseAuth.getCurrentUser();
+                            AuthCredential credential = EmailAuthProvider.getCredential(Email, Password);
+                            firebaseUser.reauthenticate(credential)
+                                    .addOnCompleteListener(new OnCompleteListener<Void>() {
+                                        @Override
+                                        public void onComplete(@NonNull Task<Void> task) {
+                                            firebaseUser.delete()
+                                                    .addOnCompleteListener(new OnCompleteListener<Void>() {
+                                                        @Override
+                                                        public void onComplete(@NonNull Task<Void> task) {
+                                                            progressDialog.dismiss();
+                                                            if (task.isSuccessful()) {
+                                                                databaseReference.child("Users").child(UserID).removeValue();
+                                                                Toast.makeText(context, "User deleted!", Toast.LENGTH_SHORT).show();
+                                                                firebaseAuth.signOut();
+                                                                reAuthentication();
+                                                            } else  {
+                                                                Toast.makeText(context, "User can't deleted!", Toast.LENGTH_LONG).show();
+                                                                firebaseAuth.signOut();
+                                                                reAuthentication();
+                                                            }
+                                                        }
+                                                    });
+
+                                        }
+                                    });
+                        } else {
+                            progressDialog.dismiss();
+                            Toast.makeText(context, "Failed!!", Toast.LENGTH_LONG).show();
+                        }
+                    }
+                });
+    }
+
+    private void reAuthentication() {
+        FirebaseAuth firebaseAuth = FirebaseAuth.getInstance();
+        firebaseAuth.signInWithEmailAndPassword(AppPreferences.getPreferenceEmail(context), AppPreferences.getPreferencePassword(context))
+                .addOnCompleteListener(new OnCompleteListener<AuthResult>() {
+                    @Override
+                    public void onComplete(@NonNull Task<AuthResult> task) {
+                        if (task.isSuccessful()) {
+                            //Toast.makeText(getApplicationContext(), "User logged in successfully.", Toast.LENGTH_SHORT).show();
+                        } else {
+                            //Toast.makeText(getApplicationContext(), "User couldn't login successfully!!", Toast.LENGTH_LONG).show();
+                        }
+                    }
+                });
     }
 
     @SuppressLint("InflateParams")
@@ -343,13 +530,13 @@ public class RecyclerViewAdapter extends RecyclerView.Adapter<RecyclerViewAdapte
                 if (item.contains("University")) {
                     arrayAdapter2 = new ArrayAdapter<String>(context, R.layout.item_spinner, R.id.itemSpinnerTV, SPINNER_ITEM_LIST_2);
                     endPointSpinner.setAdapter(arrayAdapter2);
-                    startPointET.setVisibility(View.GONE);
+                    startPointET.setVisibility(GONE);
                 } else if (item.contains("Others")) {
                     startPointET.setVisibility(View.VISIBLE);
                 } else {
                     arrayAdapter2 = new ArrayAdapter<String>(context, R.layout.item_spinner, R.id.itemSpinnerTV, SPINNER_ITEM_LIST_3);
                     endPointSpinner.setAdapter(arrayAdapter2);
-                    startPointET.setVisibility(View.GONE);
+                    startPointET.setVisibility(GONE);
                 }
 
             }
@@ -368,7 +555,7 @@ public class RecyclerViewAdapter extends RecyclerView.Adapter<RecyclerViewAdapte
                 if (item.contains("Others")) {
                     endPointET.setVisibility(View.VISIBLE);
                 } else {
-                    endPointET.setVisibility(View.GONE);
+                    endPointET.setVisibility(GONE);
                 }
             }
 

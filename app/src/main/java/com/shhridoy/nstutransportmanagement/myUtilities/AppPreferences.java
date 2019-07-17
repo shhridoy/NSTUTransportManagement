@@ -9,6 +9,9 @@ public class AppPreferences {
 
     private static final String EMAIL = "Email";
     private static final String PASSWORD = "Password";
+    private static final String VOTED = "voted";
+    private static final String VOTED_KEY1 = "voted_key1";
+    private static final String VOTED_KEY2 = "voted_key2";
 
     public static void setPreferenceEmail(Context context, String email) {
         PreferenceManager.getDefaultSharedPreferences(context)
@@ -30,6 +33,40 @@ public class AppPreferences {
 
     public static String getPreferencePassword(Context context) {
         return PreferenceManager.getDefaultSharedPreferences(context).getString(PASSWORD, DEFAULT);
+    }
+
+    public static void setPreferenceVote(Context context, boolean voted) {
+        PreferenceManager.getDefaultSharedPreferences(context)
+                .edit()
+                .putBoolean(VOTED, voted)
+                .apply();
+    }
+
+    public static Boolean isVoted(Context context) {
+        return PreferenceManager.getDefaultSharedPreferences(context).getBoolean(VOTED, false);
+    }
+
+
+    public static void setPreferenceVotedKeyToCampus(Context context, String voted_key) {
+        PreferenceManager.getDefaultSharedPreferences(context)
+                .edit()
+                .putString(VOTED_KEY1, voted_key)
+                .apply();
+    }
+
+    public static String getPreferenceVotedKeyToCampus(Context context) {
+        return PreferenceManager.getDefaultSharedPreferences(context).getString(VOTED_KEY1, DEFAULT);
+    }
+
+    public static void setPreferenceVotedKeyFromCampus(Context context, String voted_key) {
+        PreferenceManager.getDefaultSharedPreferences(context)
+                .edit()
+                .putString(VOTED_KEY2, voted_key)
+                .apply();
+    }
+
+    public static String getPreferenceVotedKeyFromCampus(Context context) {
+        return PreferenceManager.getDefaultSharedPreferences(context).getString(VOTED_KEY2, DEFAULT);
     }
 
 }

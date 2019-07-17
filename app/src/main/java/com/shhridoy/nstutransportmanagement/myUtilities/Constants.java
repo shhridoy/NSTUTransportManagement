@@ -16,6 +16,7 @@ public class Constants {
     // recycler view adapter Tags
     public static final String USER_TAG = "User";
     public static final String ADMIN_TAG = "Admin";
+    public static final String USERS_LIST_TAG = "UserList";
 
     public static final String ADMIN_EMAIL = "admin@gmail.com";
 
