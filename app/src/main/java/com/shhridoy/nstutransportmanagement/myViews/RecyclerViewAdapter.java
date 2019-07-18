@@ -55,6 +55,7 @@ import java.util.Date;
 import java.util.List;
 
 import static android.view.View.GONE;
+import static com.shhridoy.nstutransportmanagement.myUtilities.AppPreferences.DEFAULT;
 import static com.shhridoy.nstutransportmanagement.myUtilities.Constants.ADMIN_TAG;
 import static com.shhridoy.nstutransportmanagement.myUtilities.Constants.SPINNER_ITEM_LIST_1;
 import static com.shhridoy.nstutransportmanagement.myUtilities.Constants.SPINNER_ITEM_LIST_2;
@@ -81,7 +82,7 @@ public class RecyclerViewAdapter extends RecyclerView.Adapter<RecyclerViewAdapte
     private RelativeLayout rlPopup = null;
     private RadioGroup radioGroup = null;
     private RadioButton radioButton = null, teacherRb = null, studentRb = null, stuffRb = null;
-    private Button saveBtn = null;
+    private Button saveBtn = null, resetBtn = null;
 
     public RecyclerViewAdapter(Context context, List<BusSchedule> busScheduleList, DatabaseReference databaseReference, String tag) {
         this.context = context;
@@ -192,6 +193,13 @@ public class RecyclerViewAdapter extends RecyclerView.Adapter<RecyclerViewAdapte
             holder.timeTV.setText(startTime);
             holder.voteTV.setText(going);
 
+
+            if (AppPreferences.getPreferenceVotedKeyToCampus(context).equalsIgnoreCase(key) && isTimeExceeded(startTime)) {
+                AppPreferences.setPreferenceVotedKeyToCampus(context, DEFAULT);
+            }else if (AppPreferences.getPreferenceVotedKeyFromCampus(context).equalsIgnoreCase(key) && isTimeExceeded(startTime)) {
+                AppPreferences.setPreferenceVotedKeyFromCampus(context, DEFAULT);
+            }
+
             if (endPoint.contains("University") || endPoint.contains("university") || endPoint.contains("campus") || endPoint.contains("Campus")) {
                 if (AppPreferences.getPreferenceVotedKeyToCampus(context).equalsIgnoreCase(key)) {
                     holder.voteBtn.setColorFilter(context.getResources().getColor(R.color.colorPrimary), PorterDuff.Mode.SRC_ATOP);
@@ -255,8 +263,9 @@ public class RecyclerViewAdapter extends RecyclerView.Adapter<RecyclerViewAdapte
                 @Override
                 public void onClick(View view) {
                     if (endPoint.contains("University") || endPoint.contains("university") || endPoint.contains("campus") || endPoint.contains("Campus")) {
-                        if (isInternetOn() && AppPreferences.getPreferenceVotedKeyToCampus(context).equalsIgnoreCase(AppPreferences.DEFAULT)) {
+                        if (isInternetOn() && AppPreferences.getPreferenceVotedKeyToCampus(context).equalsIgnoreCase(DEFAULT)) {
                             AppPreferences.setPreferenceVotedKeyToCampus(context, key);
+                            AppPreferences.setPreferenceVoteEmail(context, AppPreferences.getPreferenceEmail(context));
                             String vote = String.valueOf(Integer.parseInt(going)+1);
                             databaseReference.child("BusSchedules").child(key).child("vote").setValue(vote)
                                     .addOnCompleteListener(new OnCompleteListener<Void>() {
@@ -270,7 +279,7 @@ public class RecyclerViewAdapter extends RecyclerView.Adapter<RecyclerViewAdapte
                                         }
                                     });
                         } else if (isInternetOn() && AppPreferences.getPreferenceVotedKeyToCampus(context).equalsIgnoreCase(key)) {
-                            AppPreferences.setPreferenceVotedKeyToCampus(context, AppPreferences.DEFAULT);
+                            AppPreferences.setPreferenceVotedKeyToCampus(context, DEFAULT);
                             String vote = String.valueOf(Integer.parseInt(going)-1);
                             databaseReference.child("BusSchedules").child(key).child("vote").setValue(vote)
                                     .addOnCompleteListener(new OnCompleteListener<Void>() {
@@ -285,8 +294,9 @@ public class RecyclerViewAdapter extends RecyclerView.Adapter<RecyclerViewAdapte
                                     });
                         }
                     } else if (!endPoint.contains("University") || !endPoint.contains("university") || !endPoint.contains("campus") || !endPoint.contains("Campus")) {
-                        if (isInternetOn() && AppPreferences.getPreferenceVotedKeyFromCampus(context).equalsIgnoreCase(AppPreferences.DEFAULT)) {
+                        if (isInternetOn() && AppPreferences.getPreferenceVotedKeyFromCampus(context).equalsIgnoreCase(DEFAULT)) {
                             AppPreferences.setPreferenceVotedKeyFromCampus(context, key);
+                            AppPreferences.setPreferenceVoteEmail(context, AppPreferences.getPreferenceEmail(context));
                             String vote = String.valueOf(Integer.parseInt(going)+1);
                             databaseReference.child("BusSchedules").child(key).child("vote").setValue(vote)
                                     .addOnCompleteListener(new OnCompleteListener<Void>() {
@@ -300,7 +310,7 @@ public class RecyclerViewAdapter extends RecyclerView.Adapter<RecyclerViewAdapte
                                         }
                                     });
                         } else if (isInternetOn() && AppPreferences.getPreferenceVotedKeyFromCampus(context).equalsIgnoreCase(key)) {
-                            AppPreferences.setPreferenceVotedKeyFromCampus(context, AppPreferences.DEFAULT);
+                            AppPreferences.setPreferenceVotedKeyFromCampus(context, DEFAULT);
                             String vote = String.valueOf(Integer.parseInt(going)-1);
                             databaseReference.child("BusSchedules").child(key).child("vote").setValue(vote)
                                     .addOnCompleteListener(new OnCompleteListener<Void>() {
@@ -470,6 +480,7 @@ public class RecyclerViewAdapter extends RecyclerView.Adapter<RecyclerViewAdapte
             timeET = layout.findViewById(R.id.busSchedulePopupTimeET);
             goingET = layout.findViewById(R.id.busScheduleGoingET);
             saveBtn = layout.findViewById(R.id.busScheduleSaveBtn);
+            resetBtn = layout.findViewById(R.id.resetBtn);
 
             radioGroup = layout.findViewById(R.id.busSchedulePopupBusTypeRG);
             teacherRb = layout.findViewById(R.id.radioBtnTeacher);
@@ -619,6 +630,25 @@ public class RecyclerViewAdapter extends RecyclerView.Adapter<RecyclerViewAdapte
             }
         });
 
+        assert resetBtn != null;
+        resetBtn.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                databaseReference.child("BusSchedules").child(Key).child("vote").setValue("0")
+                        .addOnCompleteListener(new OnCompleteListener<Void>() {
+                            @Override
+                            public void onComplete(@NonNull Task<Void> task) {
+                                if (task.isSuccessful()) {
+                                    goingET.setText("0");
+                                    Toast.makeText(context, "Reset!", Toast.LENGTH_SHORT).show();
+                                } else {
+                                    Toast.makeText(context, "Reset failed!!", Toast.LENGTH_SHORT).show();
+                                }
+                            }
+                        });
+            }
+        });
+
         assert backDimRL != null;
         backDimRL.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -737,6 +767,31 @@ public class RecyclerViewAdapter extends RecyclerView.Adapter<RecyclerViewAdapte
 
         }
 
+    }
+
+    private boolean isTimeExceeded(String time) {
+        try {
+            //String _24HourTime = "22:15";
+            SimpleDateFormat _24HourSDF = new SimpleDateFormat("HH:mm");
+            SimpleDateFormat _12HourSDF = new SimpleDateFormat("hh:mm a");
+            Date _12HourDt = _12HourSDF.parse(time);
+            String currentTime = _24HourSDF.format(Calendar.getInstance().getTime());
+            String busStartingTime = _24HourSDF.format(_12HourDt);
+            Date date1 = _24HourSDF.parse(busStartingTime);
+            Date dateCurrent = _24HourSDF.parse(currentTime);
+
+            if(date1.before(dateCurrent)) {
+                return false;
+            } else {
+                return true;
+            }
+
+
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+
+        return false;
     }
 
     private boolean isInternetOn() {

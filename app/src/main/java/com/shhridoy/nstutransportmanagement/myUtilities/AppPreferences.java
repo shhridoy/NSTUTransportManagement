@@ -9,7 +9,7 @@ public class AppPreferences {
 
     private static final String EMAIL = "Email";
     private static final String PASSWORD = "Password";
-    private static final String VOTED = "voted";
+    private static final String VOTED_EMAIL = "voted_email";
     private static final String VOTED_KEY1 = "voted_key1";
     private static final String VOTED_KEY2 = "voted_key2";
 
@@ -35,15 +35,15 @@ public class AppPreferences {
         return PreferenceManager.getDefaultSharedPreferences(context).getString(PASSWORD, DEFAULT);
     }
 
-    public static void setPreferenceVote(Context context, boolean voted) {
+    public static void setPreferenceVoteEmail(Context context, String email) {
         PreferenceManager.getDefaultSharedPreferences(context)
                 .edit()
-                .putBoolean(VOTED, voted)
+                .putString(VOTED_EMAIL, email)
                 .apply();
     }
 
-    public static Boolean isVoted(Context context) {
-        return PreferenceManager.getDefaultSharedPreferences(context).getBoolean(VOTED, false);
+    public static String getPreferenceVotedEmail(Context context) {
+        return PreferenceManager.getDefaultSharedPreferences(context).getString(VOTED_EMAIL, DEFAULT);
     }
 
 

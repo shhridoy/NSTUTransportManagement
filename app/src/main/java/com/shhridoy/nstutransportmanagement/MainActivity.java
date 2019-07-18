@@ -136,6 +136,11 @@ public class MainActivity extends AppCompatActivity {
             addScheduleFab.hide();
         }
 
+        if (!AppPreferences.getPreferenceVotedEmail(this).equalsIgnoreCase(AppPreferences.getPreferenceEmail(this))) {
+            AppPreferences.setPreferenceVotedKeyFromCampus(this, AppPreferences.DEFAULT);
+            AppPreferences.setPreferenceVotedKeyToCampus(this, AppPreferences.DEFAULT);
+        }
+
         getUserDesignationData();
         //getBusScheduleList();
 
