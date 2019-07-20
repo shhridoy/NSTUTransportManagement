@@ -5,9 +5,7 @@ import android.app.ProgressDialog;
 import android.app.TimePickerDialog;
 import android.content.Context;
 import android.content.DialogInterface;
-import android.content.Intent;
 import android.graphics.PorterDuff;
-import android.net.ConnectivityManager;
 import android.support.annotation.NonNull;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.widget.RecyclerView;
@@ -41,13 +39,11 @@ import com.google.firebase.auth.EmailAuthProvider;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.database.DatabaseReference;
-import com.shhridoy.nstutransportmanagement.MainActivity;
 import com.shhridoy.nstutransportmanagement.R;
 import com.shhridoy.nstutransportmanagement.myObjects.BusSchedule;
 import com.shhridoy.nstutransportmanagement.myObjects.Profile;
 import com.shhridoy.nstutransportmanagement.myUtilities.AppPreferences;
 
-import java.security.spec.PSSParameterSpec;
 import java.text.SimpleDateFormat;
 import java.util.Arrays;
 import java.util.Calendar;
@@ -61,6 +57,7 @@ import static com.shhridoy.nstutransportmanagement.myUtilities.Constants.SPINNER
 import static com.shhridoy.nstutransportmanagement.myUtilities.Constants.SPINNER_ITEM_LIST_2;
 import static com.shhridoy.nstutransportmanagement.myUtilities.Constants.SPINNER_ITEM_LIST_3;
 import static com.shhridoy.nstutransportmanagement.myUtilities.Constants.USERS_LIST_TAG;
+import static com.shhridoy.nstutransportmanagement.myUtilities.ExtraUtils.IS_INTERNET_ON;
 
 public class RecyclerViewAdapter extends RecyclerView.Adapter<RecyclerViewAdapter.ViewHolder> {
 
@@ -194,11 +191,6 @@ public class RecyclerViewAdapter extends RecyclerView.Adapter<RecyclerViewAdapte
             holder.voteTV.setText(going);
 
 
-            if (AppPreferences.getPreferenceVotedKeyToCampus(context).equalsIgnoreCase(key) && isTimeExceeded(startTime)) {
-                AppPreferences.setPreferenceVotedKeyToCampus(context, DEFAULT);
-            }else if (AppPreferences.getPreferenceVotedKeyFromCampus(context).equalsIgnoreCase(key) && isTimeExceeded(startTime)) {
-                AppPreferences.setPreferenceVotedKeyFromCampus(context, DEFAULT);
-            }
 
             if (endPoint.contains("University") || endPoint.contains("university") || endPoint.contains("campus") || endPoint.contains("Campus")) {
                 if (AppPreferences.getPreferenceVotedKeyToCampus(context).equalsIgnoreCase(key)) {
@@ -263,7 +255,7 @@ public class RecyclerViewAdapter extends RecyclerView.Adapter<RecyclerViewAdapte
                 @Override
                 public void onClick(View view) {
                     if (endPoint.contains("University") || endPoint.contains("university") || endPoint.contains("campus") || endPoint.contains("Campus")) {
-                        if (isInternetOn() && AppPreferences.getPreferenceVotedKeyToCampus(context).equalsIgnoreCase(DEFAULT)) {
+                        if (IS_INTERNET_ON(context) && AppPreferences.getPreferenceVotedKeyToCampus(context).equalsIgnoreCase(DEFAULT)) {
                             AppPreferences.setPreferenceVotedKeyToCampus(context, key);
                             AppPreferences.setPreferenceVoteEmail(context, AppPreferences.getPreferenceEmail(context));
                             String vote = String.valueOf(Integer.parseInt(going)+1);
@@ -278,7 +270,7 @@ public class RecyclerViewAdapter extends RecyclerView.Adapter<RecyclerViewAdapte
                                             }
                                         }
                                     });
-                        } else if (isInternetOn() && AppPreferences.getPreferenceVotedKeyToCampus(context).equalsIgnoreCase(key)) {
+                        } else if (IS_INTERNET_ON(context) && AppPreferences.getPreferenceVotedKeyToCampus(context).equalsIgnoreCase(key)) {
                             AppPreferences.setPreferenceVotedKeyToCampus(context, DEFAULT);
                             String vote = String.valueOf(Integer.parseInt(going)-1);
                             databaseReference.child("BusSchedules").child(key).child("vote").setValue(vote)
@@ -294,7 +286,7 @@ public class RecyclerViewAdapter extends RecyclerView.Adapter<RecyclerViewAdapte
                                     });
                         }
                     } else if (!endPoint.contains("University") || !endPoint.contains("university") || !endPoint.contains("campus") || !endPoint.contains("Campus")) {
-                        if (isInternetOn() && AppPreferences.getPreferenceVotedKeyFromCampus(context).equalsIgnoreCase(DEFAULT)) {
+                        if (IS_INTERNET_ON(context) && AppPreferences.getPreferenceVotedKeyFromCampus(context).equalsIgnoreCase(DEFAULT)) {
                             AppPreferences.setPreferenceVotedKeyFromCampus(context, key);
                             AppPreferences.setPreferenceVoteEmail(context, AppPreferences.getPreferenceEmail(context));
                             String vote = String.valueOf(Integer.parseInt(going)+1);
@@ -309,7 +301,7 @@ public class RecyclerViewAdapter extends RecyclerView.Adapter<RecyclerViewAdapte
                                             }
                                         }
                                     });
-                        } else if (isInternetOn() && AppPreferences.getPreferenceVotedKeyFromCampus(context).equalsIgnoreCase(key)) {
+                        } else if (IS_INTERNET_ON(context) && AppPreferences.getPreferenceVotedKeyFromCampus(context).equalsIgnoreCase(key)) {
                             AppPreferences.setPreferenceVotedKeyFromCampus(context, DEFAULT);
                             String vote = String.valueOf(Integer.parseInt(going)-1);
                             databaseReference.child("BusSchedules").child(key).child("vote").setValue(vote)
@@ -611,7 +603,7 @@ public class RecyclerViewAdapter extends RecyclerView.Adapter<RecyclerViewAdapte
         saveBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                if (isInternetOn()) {
+                if (IS_INTERNET_ON(context)) {
                     updateBusSchedule(
                             finalLayout,
                             Key,
@@ -767,54 +759,6 @@ public class RecyclerViewAdapter extends RecyclerView.Adapter<RecyclerViewAdapte
 
         }
 
-    }
-
-    private boolean isTimeExceeded(String time) {
-        try {
-            //String _24HourTime = "22:15";
-            SimpleDateFormat _24HourSDF = new SimpleDateFormat("HH:mm");
-            SimpleDateFormat _12HourSDF = new SimpleDateFormat("hh:mm a");
-            Date _12HourDt = _12HourSDF.parse(time);
-            String currentTime = _24HourSDF.format(Calendar.getInstance().getTime());
-            String busStartingTime = _24HourSDF.format(_12HourDt);
-            Date date1 = _24HourSDF.parse(busStartingTime);
-            Date dateCurrent = _24HourSDF.parse(currentTime);
-
-            if(date1.before(dateCurrent)) {
-                return false;
-            } else {
-                return true;
-            }
-
-
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-
-        return false;
-    }
-
-    private boolean isInternetOn() {
-
-        // get Connectivity Manager object to check connection
-        //getBaseContext();
-        ConnectivityManager connec = (ConnectivityManager) context.getSystemService(Context.CONNECTIVITY_SERVICE);
-
-        // Check for network connections
-        assert connec != null;
-        if (connec.getNetworkInfo(0).getState() == android.net.NetworkInfo.State.CONNECTED ||
-                connec.getNetworkInfo(0).getState() == android.net.NetworkInfo.State.CONNECTING ||
-                connec.getNetworkInfo(1).getState() == android.net.NetworkInfo.State.CONNECTING ||
-                connec.getNetworkInfo(1).getState() == android.net.NetworkInfo.State.CONNECTED) {
-
-            return true;
-        } else if (connec.getNetworkInfo(0).getState() == android.net.NetworkInfo.State.DISCONNECTED ||
-                connec.getNetworkInfo(1).getState() == android.net.NetworkInfo.State.DISCONNECTED) {
-
-            return false;
-        }
-
-        return false;
     }
 
 }

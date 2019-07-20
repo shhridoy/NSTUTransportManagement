@@ -18,8 +18,12 @@ import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.AuthResult;
 import com.google.firebase.auth.FirebaseAuth;
 import com.shhridoy.nstutransportmanagement.myUtilities.AppPreferences;
+import com.shhridoy.nstutransportmanagement.myUtilities.ExtraUtils;
 
 import uk.co.chrisjenx.calligraphy.CalligraphyContextWrapper;
+
+import static com.shhridoy.nstutransportmanagement.myUtilities.ExtraUtils.IS_INTERNET_ON;
+import static com.shhridoy.nstutransportmanagement.myUtilities.ExtraUtils.TIMING;
 
 public class SplashScreenActivity extends AppCompatActivity {
 
@@ -40,7 +44,9 @@ public class SplashScreenActivity extends AppCompatActivity {
         progressBar = findViewById(R.id.progressBar);
         progressBar.setVisibility(View.GONE);
 
-        isInitialInternetOn = isInternetOn();
+        //TIMING();
+
+        isInitialInternetOn = IS_INTERNET_ON(this);
 
         new Handler().postDelayed(new Runnable() {
             @Override
@@ -55,9 +61,9 @@ public class SplashScreenActivity extends AppCompatActivity {
     public void onWindowFocusChanged(boolean hasFocus) {
         super.onWindowFocusChanged(hasFocus);
         if (hasFocus) {
-            if (isInitialInternetOn != isInternetOn()) {
+            if (isInitialInternetOn != IS_INTERNET_ON(this)) {
                 userAuthCheckAndGoToActivity();
-                isInitialInternetOn = isInternetOn();
+                isInitialInternetOn = IS_INTERNET_ON(this);
             }
         }
     }
@@ -72,7 +78,7 @@ public class SplashScreenActivity extends AppCompatActivity {
 
         if (isUserLoggedIn()) {
             progressBar.setVisibility(View.VISIBLE);
-            if (isInternetOn()) {
+            if (IS_INTERNET_ON(this)) {
                 userLogin();
             } else {
                 Toast.makeText(getApplicationContext(), "Please check internet connection!!", Toast.LENGTH_LONG).show();
@@ -84,7 +90,7 @@ public class SplashScreenActivity extends AppCompatActivity {
             finish();
         }
         /*
-        if (isInternetOn()) {
+        if (IS_INTERNET_ON()) {
             if (isUserLoggedIn()) {
                 userLogin();
             } else {
@@ -121,29 +127,6 @@ public class SplashScreenActivity extends AppCompatActivity {
                         }
                     }
                 });
-    }
-
-    private boolean isInternetOn() {
-
-        // get Connectivity Manager object to check connection
-        getBaseContext();
-        ConnectivityManager connec = (ConnectivityManager) getSystemService(Context.CONNECTIVITY_SERVICE);
-
-        // Check for network connections
-        assert connec != null;
-        if (connec.getNetworkInfo(0).getState() == android.net.NetworkInfo.State.CONNECTED ||
-                connec.getNetworkInfo(0).getState() == android.net.NetworkInfo.State.CONNECTING ||
-                connec.getNetworkInfo(1).getState() == android.net.NetworkInfo.State.CONNECTING ||
-                connec.getNetworkInfo(1).getState() == android.net.NetworkInfo.State.CONNECTED) {
-
-            return true;
-        } else if (connec.getNetworkInfo(0).getState() == android.net.NetworkInfo.State.DISCONNECTED ||
-                connec.getNetworkInfo(1).getState() == android.net.NetworkInfo.State.DISCONNECTED) {
-
-            return false;
-        }
-
-        return false;
     }
 
     @Override

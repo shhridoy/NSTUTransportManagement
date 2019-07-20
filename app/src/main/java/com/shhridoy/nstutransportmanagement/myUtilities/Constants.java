@@ -20,6 +20,8 @@ public class Constants {
 
     public static final String ADMIN_EMAIL = "admin@gmail.com";
 
+    public static final String EXCEED_TIME = "06:00 am";
+
     // activity intent
     public static final String INTENT_KEY_TAG = "key_tag";
     public static final String INTENT_NAME_TAG = "name_tag";

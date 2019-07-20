@@ -26,8 +26,11 @@ import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.shhridoy.nstutransportmanagement.myUtilities.AppPreferences;
+import com.shhridoy.nstutransportmanagement.myUtilities.ExtraUtils;
 
 import uk.co.chrisjenx.calligraphy.CalligraphyContextWrapper;
+
+import static com.shhridoy.nstutransportmanagement.myUtilities.ExtraUtils.IS_INTERNET_ON;
 
 public class LoginActivity extends AppCompatActivity {
 
@@ -88,7 +91,7 @@ public class LoginActivity extends AppCompatActivity {
         loginBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                if (isInternetOn()) {
+                if (IS_INTERNET_ON(LoginActivity.this)) {
                     loginUsingEmailAndPass();
                 } else {
                     Toast.makeText(getApplicationContext(), "Please check internet connection!!", Toast.LENGTH_LONG).show();
@@ -139,29 +142,6 @@ public class LoginActivity extends AppCompatActivity {
                     });
         }
 
-    }
-
-    private boolean isInternetOn() {
-
-        // get Connectivity Manager object to check connection
-        getBaseContext();
-        ConnectivityManager connec = (ConnectivityManager) getSystemService(Context.CONNECTIVITY_SERVICE);
-
-        // Check for network connections
-        assert connec != null;
-        if (connec.getNetworkInfo(0).getState() == android.net.NetworkInfo.State.CONNECTED ||
-                connec.getNetworkInfo(0).getState() == android.net.NetworkInfo.State.CONNECTING ||
-                connec.getNetworkInfo(1).getState() == android.net.NetworkInfo.State.CONNECTING ||
-                connec.getNetworkInfo(1).getState() == android.net.NetworkInfo.State.CONNECTED) {
-
-            return true;
-        } else if (connec.getNetworkInfo(0).getState() == android.net.NetworkInfo.State.DISCONNECTED ||
-                connec.getNetworkInfo(1).getState() == android.net.NetworkInfo.State.DISCONNECTED) {
-
-            return false;
-        }
-
-        return false;
     }
 
     @Override

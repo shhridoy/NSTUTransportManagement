@@ -5,6 +5,7 @@ import android.app.ProgressDialog;
 import android.app.TimePickerDialog;
 import android.content.Context;
 import android.content.Intent;
+import android.media.midi.MidiDeviceService;
 import android.net.ConnectivityManager;
 import android.os.Bundle;
 import android.os.Handler;
@@ -16,6 +17,7 @@ import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
+import android.util.Log;
 import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.MotionEvent;
@@ -46,6 +48,7 @@ import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 import com.shhridoy.nstutransportmanagement.myObjects.BusSchedule;
 import com.shhridoy.nstutransportmanagement.myUtilities.AppPreferences;
+import com.shhridoy.nstutransportmanagement.myUtilities.ExtraUtils;
 import com.shhridoy.nstutransportmanagement.myViews.RecyclerViewAdapter;
 
 import java.text.SimpleDateFormat;
@@ -56,12 +59,16 @@ import java.util.List;
 
 import uk.co.chrisjenx.calligraphy.CalligraphyContextWrapper;
 
+import static com.shhridoy.nstutransportmanagement.myUtilities.AppPreferences.DEFAULT;
 import static com.shhridoy.nstutransportmanagement.myUtilities.Constants.ADMIN_EMAIL;
 import static com.shhridoy.nstutransportmanagement.myUtilities.Constants.ADMIN_TAG;
+import static com.shhridoy.nstutransportmanagement.myUtilities.Constants.EXCEED_TIME;
 import static com.shhridoy.nstutransportmanagement.myUtilities.Constants.SPINNER_ITEM_LIST_1;
 import static com.shhridoy.nstutransportmanagement.myUtilities.Constants.SPINNER_ITEM_LIST_2;
 import static com.shhridoy.nstutransportmanagement.myUtilities.Constants.SPINNER_ITEM_LIST_3;
 import static com.shhridoy.nstutransportmanagement.myUtilities.Constants.USER_TAG;
+import static com.shhridoy.nstutransportmanagement.myUtilities.ExtraUtils.IS_INTERNET_ON;
+import static com.shhridoy.nstutransportmanagement.myUtilities.ExtraUtils.IS_TIME_EXCEEDED;
 
 public class MainActivity extends AppCompatActivity {
 
@@ -120,6 +127,30 @@ public class MainActivity extends AppCompatActivity {
         recyclerView.setLayoutManager(new LinearLayoutManager(this));
         recyclerView.setHasFixedSize(true);
 
+        /*if (IS_TIME_EXCEEDED(EXCEED_TIME)) {
+            Toast.makeText(this, "After", Toast.LENGTH_LONG).show();
+        } else {
+            Toast.makeText(this, "Before", Toast.LENGTH_LONG).show();
+        }*/
+
+        if (IS_TIME_EXCEEDED(EXCEED_TIME) &&
+                AppPreferences.getPreferenceVotedEmail(this).equalsIgnoreCase(AppPreferences.getPreferenceEmail(this))
+        ) {
+            AppPreferences.setPreferenceVotedKeyToCampus(this, DEFAULT);
+            AppPreferences.setPreferenceVotedKeyFromCampus(this, DEFAULT);
+            /*if ((!AppPreferences.getPreferenceVotedKeyToCampus(this).equalsIgnoreCase(DEFAULT) ||
+                    !AppPreferences.getPreferenceVotedKeyFromCampus(this).equalsIgnoreCase(DEFAULT)) &&
+                    !AppPreferences.getPreferenceVotedEmail(this).equalsIgnoreCase(DEFAULT)) {
+
+            }*/
+        } else {
+            if (!AppPreferences.getPreferenceVotedEmail(this).equalsIgnoreCase(AppPreferences.getPreferenceEmail(this))) {
+                AppPreferences.setPreferenceVoteEmail(this, AppPreferences.getPreferenceEmail(this));
+                AppPreferences.setPreferenceVotedKeyToCampus(this, DEFAULT);
+                AppPreferences.setPreferenceVotedKeyFromCampus(this, DEFAULT);
+            }
+        }
+
         selectToCampus(true);
 
         busSchedules = new ArrayList<>();
@@ -137,8 +168,8 @@ public class MainActivity extends AppCompatActivity {
         }
 
         if (!AppPreferences.getPreferenceVotedEmail(this).equalsIgnoreCase(AppPreferences.getPreferenceEmail(this))) {
-            AppPreferences.setPreferenceVotedKeyFromCampus(this, AppPreferences.DEFAULT);
-            AppPreferences.setPreferenceVotedKeyToCampus(this, AppPreferences.DEFAULT);
+            AppPreferences.setPreferenceVotedKeyFromCampus(this, DEFAULT);
+            AppPreferences.setPreferenceVotedKeyToCampus(this, DEFAULT);
         }
 
         getUserDesignationData();
@@ -340,8 +371,8 @@ public class MainActivity extends AppCompatActivity {
 
     private void logout() {
         firebaseAuth.signOut();
-        AppPreferences.setPreferenceEmail(this, AppPreferences.DEFAULT);
-        AppPreferences.setPreferencePassword(this, AppPreferences.DEFAULT);
+        AppPreferences.setPreferenceEmail(this, DEFAULT);
+        AppPreferences.setPreferencePassword(this, DEFAULT);
         finish();
         startActivity(new Intent(getApplicationContext(), LoginActivity.class).setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP));
     }
@@ -502,7 +533,7 @@ public class MainActivity extends AppCompatActivity {
         saveBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                if (isInternetOn()) {
+                if (IS_INTERNET_ON(MainActivity.this)) {
                     addBusScheduleToDB(
                             finalLayout,
                             busTitleET,
@@ -639,29 +670,6 @@ public class MainActivity extends AppCompatActivity {
 
         }
 
-    }
-
-    private boolean isInternetOn() {
-
-        // get Connectivity Manager object to check connection
-        getBaseContext();
-        ConnectivityManager connec = (ConnectivityManager) getSystemService(Context.CONNECTIVITY_SERVICE);
-
-        // Check for network connections
-        assert connec != null;
-        if (connec.getNetworkInfo(0).getState() == android.net.NetworkInfo.State.CONNECTED ||
-                connec.getNetworkInfo(0).getState() == android.net.NetworkInfo.State.CONNECTING ||
-                connec.getNetworkInfo(1).getState() == android.net.NetworkInfo.State.CONNECTING ||
-                connec.getNetworkInfo(1).getState() == android.net.NetworkInfo.State.CONNECTED) {
-
-            return true;
-        } else if (connec.getNetworkInfo(0).getState() == android.net.NetworkInfo.State.DISCONNECTED ||
-                connec.getNetworkInfo(1).getState() == android.net.NetworkInfo.State.DISCONNECTED) {
-
-            return false;
-        }
-
-        return false;
     }
 
 }
