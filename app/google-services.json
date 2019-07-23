@@ -1,34 +1,34 @@
 {
   "project_info": {
-    "project_number": "963300055023",
-    "firebase_url": "https://nstu-transport-management.firebaseio.com",
-    "project_id": "nstu-transport-management",
-    "storage_bucket": "nstu-transport-management.appspot.com"
+    "project_number": "636268646866",
+    "firebase_url": "https://nstu-transport-managemen-53606.firebaseio.com",
+    "project_id": "nstu-transport-managemen-53606",
+    "storage_bucket": "nstu-transport-managemen-53606.appspot.com"
   },
   "client": [
     {
       "client_info": {
-        "mobilesdk_app_id": "1:963300055023:android:6b3830d670873f35",
+        "mobilesdk_app_id": "1:636268646866:android:b408e8e573654343",
         "android_client_info": {
-          "package_name": "com.shhridoy.nstutransportmanagement"
+          "package_name": "com.shhridoy.transportmanagementnstu"
         }
       },
       "oauth_client": [
         {
-          "client_id": "963300055023-ngghlhosjjf1ue7krtodafa46k9stbgq.apps.googleusercontent.com",
+          "client_id": "636268646866-jvcrbrk1c8tqo0shr2r3uptbnd2psjfi.apps.googleusercontent.com",
           "client_type": 3
         }
       ],
       "api_key": [
         {
-          "current_key": "AIzaSyDykfFreidnXGdVv7TA2EQqdr_UoJHH3UU"
+          "current_key": "AIzaSyBrOmHZzVK6uFtP4tnVt5iGZBenJAGpxzw"
         }
       ],
       "services": {
         "appinvite_service": {
           "other_platform_oauth_client": [
             {
-              "client_id": "963300055023-ngghlhosjjf1ue7krtodafa46k9stbgq.apps.googleusercontent.com",
+              "client_id": "636268646866-jvcrbrk1c8tqo0shr2r3uptbnd2psjfi.apps.googleusercontent.com",
               "client_type": 3
             }
           ]

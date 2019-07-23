@@ -1,11 +1,8 @@
-package com.shhridoy.nstutransportmanagement.myUtilities;
+package com.shhridoy.transportmanagementnstu.myUtilities;
 
-import android.annotation.SuppressLint;
-import android.app.Activity;
 import android.content.Context;
 import android.net.ConnectivityManager;
 import android.util.Log;
-import android.widget.Toast;
 
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;

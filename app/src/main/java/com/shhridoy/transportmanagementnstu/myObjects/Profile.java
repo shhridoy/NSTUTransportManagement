@@ -1,4 +1,4 @@
-package com.shhridoy.nstutransportmanagement.myObjects;
+package com.shhridoy.transportmanagementnstu.myObjects;
 
 public class Profile {
 

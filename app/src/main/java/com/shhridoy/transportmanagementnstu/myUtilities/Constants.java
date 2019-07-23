@@ -1,4 +1,4 @@
-package com.shhridoy.nstutransportmanagement.myUtilities;
+package com.shhridoy.transportmanagementnstu.myUtilities;
 
 public class Constants {
 

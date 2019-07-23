@@ -1,16 +1,14 @@
-package com.shhridoy.nstutransportmanagement;
+package com.shhridoy.transportmanagementnstu;
 
 import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.Intent;
-import android.net.ConnectivityManager;
 import android.support.annotation.NonNull;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.text.Html;
 import android.text.method.HideReturnsTransformationMethod;
 import android.text.method.PasswordTransformationMethod;
-import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
@@ -24,13 +22,11 @@ import com.google.firebase.auth.AuthResult;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.database.DatabaseReference;
-import com.google.firebase.database.FirebaseDatabase;
-import com.shhridoy.nstutransportmanagement.myUtilities.AppPreferences;
-import com.shhridoy.nstutransportmanagement.myUtilities.ExtraUtils;
+import com.shhridoy.transportmanagementnstu.myUtilities.AppPreferences;
 
 import uk.co.chrisjenx.calligraphy.CalligraphyContextWrapper;
 
-import static com.shhridoy.nstutransportmanagement.myUtilities.ExtraUtils.IS_INTERNET_ON;
+import static com.shhridoy.transportmanagementnstu.myUtilities.ExtraUtils.IS_INTERNET_ON;
 
 public class LoginActivity extends AppCompatActivity {
 

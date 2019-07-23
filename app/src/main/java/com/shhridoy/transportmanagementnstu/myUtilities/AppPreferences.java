@@ -1,4 +1,4 @@
-package com.shhridoy.nstutransportmanagement.myUtilities;
+package com.shhridoy.transportmanagementnstu.myUtilities;
 
 import android.content.Context;
 import android.preference.PreferenceManager;

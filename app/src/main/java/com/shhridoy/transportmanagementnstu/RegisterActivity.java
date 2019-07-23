@@ -1,9 +1,7 @@
-package com.shhridoy.nstutransportmanagement;
+package com.shhridoy.transportmanagementnstu;
 
 import android.app.ProgressDialog;
 import android.content.Context;
-import android.content.Intent;
-import android.net.ConnectivityManager;
 import android.support.annotation.NonNull;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
@@ -26,12 +24,11 @@ import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
-import com.shhridoy.nstutransportmanagement.myObjects.Profile;
-import com.shhridoy.nstutransportmanagement.myUtilities.ExtraUtils;
+import com.shhridoy.transportmanagementnstu.myObjects.Profile;
 
 import uk.co.chrisjenx.calligraphy.CalligraphyContextWrapper;
 
-import static com.shhridoy.nstutransportmanagement.myUtilities.ExtraUtils.IS_INTERNET_ON;
+import static com.shhridoy.transportmanagementnstu.myUtilities.ExtraUtils.IS_INTERNET_ON;
 
 public class RegisterActivity extends AppCompatActivity {
 

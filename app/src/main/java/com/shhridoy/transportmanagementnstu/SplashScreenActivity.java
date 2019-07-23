@@ -1,29 +1,24 @@
-package com.shhridoy.nstutransportmanagement;
+package com.shhridoy.transportmanagementnstu;
 
-import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.Intent;
-import android.net.ConnectivityManager;
 import android.os.Handler;
 import android.support.annotation.NonNull;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.ProgressBar;
-import android.widget.TextView;
 import android.widget.Toast;
 
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.AuthResult;
 import com.google.firebase.auth.FirebaseAuth;
-import com.shhridoy.nstutransportmanagement.myUtilities.AppPreferences;
-import com.shhridoy.nstutransportmanagement.myUtilities.ExtraUtils;
+import com.shhridoy.transportmanagementnstu.myUtilities.AppPreferences;
 
 import uk.co.chrisjenx.calligraphy.CalligraphyContextWrapper;
 
-import static com.shhridoy.nstutransportmanagement.myUtilities.ExtraUtils.IS_INTERNET_ON;
-import static com.shhridoy.nstutransportmanagement.myUtilities.ExtraUtils.TIMING;
+import static com.shhridoy.transportmanagementnstu.myUtilities.ExtraUtils.IS_INTERNET_ON;
 
 public class SplashScreenActivity extends AppCompatActivity {
 
@@ -124,6 +119,8 @@ public class SplashScreenActivity extends AppCompatActivity {
                             startActivity(new Intent(getApplicationContext(), MainActivity.class));
                         } else {
                             Toast.makeText(getApplicationContext(), "User couldn't login successfully!!", Toast.LENGTH_LONG).show();
+                            finish();
+                            startActivity(new Intent(getApplicationContext(), LoginActivity.class));
                         }
                     }
                 });

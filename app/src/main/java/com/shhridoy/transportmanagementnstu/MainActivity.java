@@ -1,12 +1,10 @@
-package com.shhridoy.nstutransportmanagement;
+package com.shhridoy.transportmanagementnstu;
 
 import android.annotation.SuppressLint;
 import android.app.ProgressDialog;
 import android.app.TimePickerDialog;
 import android.content.Context;
 import android.content.Intent;
-import android.media.midi.MidiDeviceService;
-import android.net.ConnectivityManager;
 import android.os.Bundle;
 import android.os.Handler;
 import android.support.annotation.NonNull;
@@ -17,7 +15,6 @@ import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
-import android.util.Log;
 import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.MotionEvent;
@@ -46,10 +43,9 @@ import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
-import com.shhridoy.nstutransportmanagement.myObjects.BusSchedule;
-import com.shhridoy.nstutransportmanagement.myUtilities.AppPreferences;
-import com.shhridoy.nstutransportmanagement.myUtilities.ExtraUtils;
-import com.shhridoy.nstutransportmanagement.myViews.RecyclerViewAdapter;
+import com.shhridoy.transportmanagementnstu.myObjects.BusSchedule;
+import com.shhridoy.transportmanagementnstu.myUtilities.AppPreferences;
+import com.shhridoy.transportmanagementnstu.myViews.RecyclerViewAdapter;
 
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
@@ -59,16 +55,16 @@ import java.util.List;
 
 import uk.co.chrisjenx.calligraphy.CalligraphyContextWrapper;
 
-import static com.shhridoy.nstutransportmanagement.myUtilities.AppPreferences.DEFAULT;
-import static com.shhridoy.nstutransportmanagement.myUtilities.Constants.ADMIN_EMAIL;
-import static com.shhridoy.nstutransportmanagement.myUtilities.Constants.ADMIN_TAG;
-import static com.shhridoy.nstutransportmanagement.myUtilities.Constants.EXCEED_TIME;
-import static com.shhridoy.nstutransportmanagement.myUtilities.Constants.SPINNER_ITEM_LIST_1;
-import static com.shhridoy.nstutransportmanagement.myUtilities.Constants.SPINNER_ITEM_LIST_2;
-import static com.shhridoy.nstutransportmanagement.myUtilities.Constants.SPINNER_ITEM_LIST_3;
-import static com.shhridoy.nstutransportmanagement.myUtilities.Constants.USER_TAG;
-import static com.shhridoy.nstutransportmanagement.myUtilities.ExtraUtils.IS_INTERNET_ON;
-import static com.shhridoy.nstutransportmanagement.myUtilities.ExtraUtils.IS_TIME_EXCEEDED;
+import static com.shhridoy.transportmanagementnstu.myUtilities.AppPreferences.DEFAULT;
+import static com.shhridoy.transportmanagementnstu.myUtilities.Constants.ADMIN_EMAIL;
+import static com.shhridoy.transportmanagementnstu.myUtilities.Constants.ADMIN_TAG;
+import static com.shhridoy.transportmanagementnstu.myUtilities.Constants.EXCEED_TIME;
+import static com.shhridoy.transportmanagementnstu.myUtilities.Constants.SPINNER_ITEM_LIST_1;
+import static com.shhridoy.transportmanagementnstu.myUtilities.Constants.SPINNER_ITEM_LIST_2;
+import static com.shhridoy.transportmanagementnstu.myUtilities.Constants.SPINNER_ITEM_LIST_3;
+import static com.shhridoy.transportmanagementnstu.myUtilities.Constants.USER_TAG;
+import static com.shhridoy.transportmanagementnstu.myUtilities.ExtraUtils.IS_INTERNET_ON;
+import static com.shhridoy.transportmanagementnstu.myUtilities.ExtraUtils.IS_TIME_EXCEEDED;
 
 public class MainActivity extends AppCompatActivity {
 

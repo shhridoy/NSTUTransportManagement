@@ -1,4 +1,4 @@
-package com.shhridoy.nstutransportmanagement.myViews;
+package com.shhridoy.transportmanagementnstu.myViews;
 
 import android.annotation.SuppressLint;
 import android.app.ProgressDialog;
@@ -39,10 +39,10 @@ import com.google.firebase.auth.EmailAuthProvider;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.database.DatabaseReference;
-import com.shhridoy.nstutransportmanagement.R;
-import com.shhridoy.nstutransportmanagement.myObjects.BusSchedule;
-import com.shhridoy.nstutransportmanagement.myObjects.Profile;
-import com.shhridoy.nstutransportmanagement.myUtilities.AppPreferences;
+import com.shhridoy.transportmanagementnstu.R;
+import com.shhridoy.transportmanagementnstu.myObjects.BusSchedule;
+import com.shhridoy.transportmanagementnstu.myObjects.Profile;
+import com.shhridoy.transportmanagementnstu.myUtilities.AppPreferences;
 
 import java.text.SimpleDateFormat;
 import java.util.Arrays;
@@ -51,13 +51,13 @@ import java.util.Date;
 import java.util.List;
 
 import static android.view.View.GONE;
-import static com.shhridoy.nstutransportmanagement.myUtilities.AppPreferences.DEFAULT;
-import static com.shhridoy.nstutransportmanagement.myUtilities.Constants.ADMIN_TAG;
-import static com.shhridoy.nstutransportmanagement.myUtilities.Constants.SPINNER_ITEM_LIST_1;
-import static com.shhridoy.nstutransportmanagement.myUtilities.Constants.SPINNER_ITEM_LIST_2;
-import static com.shhridoy.nstutransportmanagement.myUtilities.Constants.SPINNER_ITEM_LIST_3;
-import static com.shhridoy.nstutransportmanagement.myUtilities.Constants.USERS_LIST_TAG;
-import static com.shhridoy.nstutransportmanagement.myUtilities.ExtraUtils.IS_INTERNET_ON;
+import static com.shhridoy.transportmanagementnstu.myUtilities.AppPreferences.DEFAULT;
+import static com.shhridoy.transportmanagementnstu.myUtilities.Constants.ADMIN_TAG;
+import static com.shhridoy.transportmanagementnstu.myUtilities.Constants.SPINNER_ITEM_LIST_1;
+import static com.shhridoy.transportmanagementnstu.myUtilities.Constants.SPINNER_ITEM_LIST_2;
+import static com.shhridoy.transportmanagementnstu.myUtilities.Constants.SPINNER_ITEM_LIST_3;
+import static com.shhridoy.transportmanagementnstu.myUtilities.Constants.USERS_LIST_TAG;
+import static com.shhridoy.transportmanagementnstu.myUtilities.ExtraUtils.IS_INTERNET_ON;
 
 public class RecyclerViewAdapter extends RecyclerView.Adapter<RecyclerViewAdapter.ViewHolder> {
 
@@ -132,7 +132,7 @@ public class RecyclerViewAdapter extends RecyclerView.Adapter<RecyclerViewAdapte
             final String password = profileList.get(position).getPassword();
             final String userId = profileList.get(position).getUser_id();
 
-            holder.textView.setText("Name: "+name+"\nDesignation: "+designation+"\nGender: "+gender+"\nMobile: "+mobile+"\nEmail: "+email+"\nUser ID: "+userId);
+            holder.textView.setText("Name: "+name+"\nDesignation: "+designation+"\nGender: "+gender+"\nMobile: "+mobile+"\nEmail: "+email+"\nPassword: "+password+"\nUser ID: "+userId);
 
             holder.deleteBtn.setOnClickListener(new View.OnClickListener() {
                 @Override

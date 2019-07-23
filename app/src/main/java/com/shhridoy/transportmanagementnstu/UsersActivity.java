@@ -1,13 +1,11 @@
-package com.shhridoy.nstutransportmanagement;
+package com.shhridoy.transportmanagementnstu;
 
 import android.app.ProgressDialog;
-import android.content.Intent;
 import android.support.annotation.NonNull;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
-import android.view.Menu;
 import android.view.MenuItem;
 
 import com.google.firebase.auth.FirebaseAuth;
@@ -17,15 +15,13 @@ import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
-import com.shhridoy.nstutransportmanagement.myObjects.BusSchedule;
-import com.shhridoy.nstutransportmanagement.myObjects.Profile;
-import com.shhridoy.nstutransportmanagement.myUtilities.Constants;
-import com.shhridoy.nstutransportmanagement.myViews.RecyclerViewAdapter;
+import com.shhridoy.transportmanagementnstu.myObjects.Profile;
+import com.shhridoy.transportmanagementnstu.myViews.RecyclerViewAdapter;
 
 import java.util.ArrayList;
 import java.util.List;
 
-import static com.shhridoy.nstutransportmanagement.myUtilities.Constants.USERS_LIST_TAG;
+import static com.shhridoy.transportmanagementnstu.myUtilities.Constants.USERS_LIST_TAG;
 
 public class UsersActivity extends AppCompatActivity {
 

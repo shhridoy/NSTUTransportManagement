@@ -1,4 +1,4 @@
-package com.shhridoy.nstutransportmanagement;
+package com.shhridoy.transportmanagementnstu;
 
 import org.junit.Test;
 
