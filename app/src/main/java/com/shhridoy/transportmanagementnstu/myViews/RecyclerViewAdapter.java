@@ -5,6 +5,7 @@ import android.app.ProgressDialog;
 import android.app.TimePickerDialog;
 import android.content.Context;
 import android.content.DialogInterface;
+import android.content.Intent;
 import android.graphics.PorterDuff;
 import android.support.annotation.NonNull;
 import android.support.v7.app.AlertDialog;
@@ -39,6 +40,7 @@ import com.google.firebase.auth.EmailAuthProvider;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.database.DatabaseReference;
+import com.shhridoy.transportmanagementnstu.MapViewActivity;
 import com.shhridoy.transportmanagementnstu.R;
 import com.shhridoy.transportmanagementnstu.myObjects.BusSchedule;
 import com.shhridoy.transportmanagementnstu.myObjects.Profile;
@@ -247,6 +249,13 @@ public class RecyclerViewAdapter extends RecyclerView.Adapter<RecyclerViewAdapte
                     busScheduleEditPopupWindow(
                             key, busTitle, busType, startTime, startPoint, endPoint, going
                     );
+                }
+            });
+
+            holder.scheduleLL.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+                    context.startActivity(new Intent(context, MapViewActivity.class).setFlags(Intent.FLAG_ACTIVITY_NEW_TASK));
                 }
             });
 
